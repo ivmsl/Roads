@@ -16,8 +16,10 @@ class CameraController {
         void Update();              // handle pan/zoom
         //Vector3 ScreenToWorld();    // mouse to world coordinates
         Camera3D& GetCamera();       // for BeginMode3D()
-        inline void RecalculateTilt();
-
+        inline void RecalculatePosition();
+        void Pan(Vector2 movementDelta);
+        void Zoom(float wheelDelta);
+        void Rotate(float tiltFix);
 };
 
 

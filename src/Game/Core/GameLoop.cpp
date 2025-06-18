@@ -9,6 +9,8 @@ void GameLoop::Initialize(int screenW, int screenH) {
     camera->Initialize();
     grid = new GridRenderer();
     grid->Initialize();
+    input = new InputHandler();
+    input->Initialize(camera, grid);
     isRunning = 1;
 }
 
@@ -81,11 +83,13 @@ void GameLoop::Run() {
 }
 
 void GameLoop::Update() {
-    camera->Update(); 
+    // camera->Update(); 
+    input->ProcessInput();
 }
 
 void GameLoop::Cleanup() {
     CloseWindow(); 
     delete camera;
     delete grid;
+    delete input;
 }
