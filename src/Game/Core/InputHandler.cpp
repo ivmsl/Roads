@@ -4,13 +4,15 @@
 #include "Game/Rendering/CameraController.hpp"
 #include "Game/Rendering/GridRender.hpp"
 
-void InputHandler::Initialize(CameraController* camera, GridRenderer* grid) {
+void InputHandler::Initialize(CameraController* camera, GridRenderer* grid, RoadPlacement* rpm) {
     cameraController = camera;
     gridRenderer = grid;
+    roadPlacement = rpm;
 }
 
 void InputHandler::ProcessInput() {
     HandleCameraInput();
+    HandleRoadPlacement();
 }
 
 void InputHandler::HandleCameraInput() {
@@ -50,4 +52,46 @@ void InputHandler::HandleCameraInput() {
     }
 
 
+}
+
+void InputHandler::HandleRoadPlacement() {
+    if (!roadPlacement) {
+        TraceLog(LOG_DEBUG, "No roadPlacement handler found");
+        return;  // Safety check
+    
+    }
+    
+    Vector2 mousePos = GetMousePosition();
+    Camera3D camera = cameraController->GetCamera();
+    
+    // Left mouse button for road placement
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        Vector2 gridPos = roadPlacement->ScreenToGrid(mousePos, camera);
+        roadPlacement->StartPlacement(gridPos);
+        
+        TraceLog(LOG_INFO, "Mouse clicked at screen (%.0f, %.0f) -> grid (%.0f, %.0f)", 
+                 mousePos.x, mousePos.y, gridPos.x, gridPos.y);
+    }
+    
+    // Update placement while dragging
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        Vector2 gridPos = roadPlacement->ScreenToGrid(mousePos, camera);
+        roadPlacement->UpdatePlacement(gridPos);
+    }
+    
+    // Finish placement when mouse released
+    if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
+        roadPlacement->FinishPlacement();
+    }
+    
+    // Right mouse button to cancel placement
+    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+        if (roadPlacement->IsPlacing()) {
+            roadPlacement->CancelPlacement();
+        } else {
+            Vector2 gridPos = roadPlacement->ScreenToGrid(mousePos, camera);
+            roadPlacement->DeleteRoadPath(gridPos);
+        }
+        
+    }
 }
