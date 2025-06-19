@@ -14,7 +14,7 @@ class RoadManager {
         
         RoadManager();
         void PlaceRoad(int x, int y, RoadDirection direction);
-        void DeleteRoad(int x, int y);
+        void DeleteRoad(int x, int y, RoadDirection dir);
         void TileToIntersection(int x, int y, int connType);
         RoadTile* GetRoad(int x, int y);
         bool IsValidPosition(int x, int y);

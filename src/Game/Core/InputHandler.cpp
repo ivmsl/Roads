@@ -4,10 +4,10 @@
 #include "Game/Rendering/CameraController.hpp"
 #include "Game/Rendering/GridRender.hpp"
 
-void InputHandler::Initialize(CameraController* camera, GridRenderer* grid, RoadPlacement* rpm) {
+void InputHandler::Initialize(CameraController* camera, GridRenderer* grid, UIManager* uim) {
     cameraController = camera;
     gridRenderer = grid;
-    roadPlacement = rpm;
+    uiManager = uim;
 }
 
 void InputHandler::ProcessInput() {
@@ -27,10 +27,10 @@ void InputHandler::HandleCameraInput() {
     if (IsKeyDown(KEY_W) || IsKeyDown(KEY_A) || IsKeyDown(KEY_S) || IsKeyDown(KEY_D)) {
         float keyboardSpeed = 2.0f; 
         
-        if (IsKeyDown(KEY_W)) movementDelta.y += keyboardSpeed;  // Move forward
-        if (IsKeyDown(KEY_S)) movementDelta.y -= keyboardSpeed;  // Move backward  
-        if (IsKeyDown(KEY_A)) movementDelta.x += keyboardSpeed;  // Move left
-        if (IsKeyDown(KEY_D)) movementDelta.x -= keyboardSpeed;  // Move right
+        if (IsKeyDown(KEY_W)) movementDelta.y += keyboardSpeed;  
+        if (IsKeyDown(KEY_S)) movementDelta.y -= keyboardSpeed;  
+        if (IsKeyDown(KEY_A)) movementDelta.x += keyboardSpeed;  
+        if (IsKeyDown(KEY_D)) movementDelta.x -= keyboardSpeed;  
         
         shouldMove = true;
     }
@@ -55,10 +55,18 @@ void InputHandler::HandleCameraInput() {
 }
 
 void InputHandler::HandleRoadPlacement() {
-    if (!roadPlacement) {
+    if (!uiManager) {
         TraceLog(LOG_DEBUG, "No roadPlacement handler found");
         return;  // Safety check
     
+    }
+
+    if (IsKeyDown(KEY_B)) {
+        uiManager->ModeSelect(UIMode::ROAD_BUILD);
+    }
+
+    if (IsKeyDown(KEY_X)) {
+        uiManager->ModeSelect(UIMode::ROAD_DELETE);
     }
     
     Vector2 mousePos = GetMousePosition();
@@ -66,8 +74,12 @@ void InputHandler::HandleRoadPlacement() {
     
     // Left mouse button for road placement
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-        Vector2 gridPos = roadPlacement->ScreenToGrid(mousePos, camera);
-        roadPlacement->StartPlacement(gridPos);
+        Ray ray = GetScreenToWorldRay(mousePos, camera);
+        Vector2 gridPos = uiManager->ScreenToGrid(ray);
+        uiManager->StartSelection(gridPos);
+
+        // Vector2 gridPos = roadPlacement->ScreenToGrid(mousePos, camera);
+        // roadPlacement->StartPlacement(gridPos);
         
         TraceLog(LOG_INFO, "Mouse clicked at screen (%.0f, %.0f) -> grid (%.0f, %.0f)", 
                  mousePos.x, mousePos.y, gridPos.x, gridPos.y);
@@ -75,23 +87,27 @@ void InputHandler::HandleRoadPlacement() {
     
     // Update placement while dragging
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
-        Vector2 gridPos = roadPlacement->ScreenToGrid(mousePos, camera);
-        roadPlacement->UpdatePlacement(gridPos);
+        // Vector2 gridPos = roadPlacement->ScreenToGrid(mousePos, camera);
+        // roadPlacement->UpdatePlacement(gridPos);
+        Ray ray = GetScreenToWorldRay(mousePos, camera);
+        Vector2 gridPos = uiManager->ScreenToGrid(ray);
+        uiManager->UpdateSelection(gridPos);
     }
     
     // Finish placement when mouse released
     if (IsMouseButtonReleased(MOUSE_BUTTON_LEFT)) {
-        roadPlacement->FinishPlacement();
+        // roadPlacement->FinishPlacement();
+        uiManager->EndSelection();
     }
     
     // Right mouse button to cancel placement
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-        if (roadPlacement->IsPlacing()) {
-            roadPlacement->CancelPlacement();
-        } else {
-            Vector2 gridPos = roadPlacement->ScreenToGrid(mousePos, camera);
-            roadPlacement->DeleteRoadPath(gridPos);
-        }
+    // if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+    //     if (roadPlacement->IsPlacing()) {
+    //         roadPlacement->CancelPlacement();
+    //     } else {
+    //         Vector2 gridPos = roadPlacement->ScreenToGrid(mousePos, camera);
+    //         roadPlacement->DeleteRoadPath(gridPos);
+    //     }
         
-    }
+    // }
 }

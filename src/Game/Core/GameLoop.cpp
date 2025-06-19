@@ -2,6 +2,7 @@
 #include "GameLoop.hpp"
 #include "Game/Rendering/CameraController.hpp"
 
+
 void GameLoop::Initialize(int screenW, int screenH) {
     InitWindow(screenW, screenH, "Games of Roads. Alpha 0.0.0");
     SetTargetFPS(60); 
@@ -10,7 +11,9 @@ void GameLoop::Initialize(int screenW, int screenH) {
     grid = new GridRenderer();
     grid->Initialize();
 
+    
     roadManager = new RoadManager();
+    uiManager = new UIManager(roadManager);
     
     if (roadManager) {
         TraceLog(LOG_DEBUG, "Road Manager inicialized!");
@@ -18,13 +21,8 @@ void GameLoop::Initialize(int screenW, int screenH) {
         roadManager->PlaceRoad(6, 10, RoadDirection::HORIZONTAL);
     }
 
-    roadPlacementManager = new RoadPlacement(roadManager);
-    if (roadPlacementManager) {
-        TraceLog(LOG_DEBUG, "Road Placement Manager inicialized!");
-    }
-
     input = new InputHandler();
-    input->Initialize(camera, grid, roadPlacementManager);
+    input->Initialize(camera, grid, uiManager);
     isRunning = 1;
 
     
@@ -46,7 +44,7 @@ void GameLoop::Render() {
 
         DrawLine3D({0, 0, 0}, {0, 20, 0}, PURPLE);  // Y-axis reference (up)
         roadManager->Render();
-        roadPlacementManager->RenderPreview();
+        uiManager->RenderSelection();
         
     EndMode3D();
     RenderDebugInfo();
@@ -107,9 +105,9 @@ void GameLoop::Update() {
 
 void GameLoop::Cleanup() {
     CloseWindow(); 
+    delete uiManager;
     delete input;
     delete camera;
     delete grid;
-    delete roadPlacementManager;
     delete roadManager;
 }

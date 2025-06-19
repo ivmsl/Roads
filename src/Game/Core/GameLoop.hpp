@@ -5,7 +5,7 @@
 #include "Game/Rendering/CameraController.hpp"
 #include "Game/Rendering/GridRender.hpp"
 #include "Game/Roads/RoadManager.hpp"
-#include "Game/Roads/RoadPlacement.hpp"
+#include "Game/UI/UIManager.hpp"
 #include "InputHandler.hpp"
 
 
@@ -15,7 +15,7 @@ class GameLoop {
         GridRenderer* grid;
         InputHandler* input;
         RoadManager* roadManager;
-        RoadPlacement* roadPlacementManager;
+        UIManager* uiManager;
         bool isRunning;
 
     public: 

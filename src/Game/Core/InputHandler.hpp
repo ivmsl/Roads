@@ -4,13 +4,13 @@
 #include "raylib.h"
 #include "Game/Rendering/CameraController.hpp"
 #include "Game/Rendering/GridRender.hpp"
-#include "Game/Roads/RoadPlacement.hpp"
+#include "Game/UI/UIManager.hpp"
 
 class InputHandler {
     private:
         CameraController* cameraController;
         GridRenderer* gridRenderer;
-        RoadPlacement* roadPlacement;
+        UIManager* uiManager;
 
         void HandleCameraInput();
         void HandleRoadPlacement();
@@ -18,7 +18,7 @@ class InputHandler {
         // void HandleGameInput();
     
     public:
-        void Initialize(CameraController* camera, GridRenderer* grid, RoadPlacement* roadPlacement);
+        void Initialize(CameraController* camera, GridRenderer* grid, UIManager* uim);
         void ProcessInput();  // Main method called each frame
 
 };

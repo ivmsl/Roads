@@ -40,7 +40,7 @@ void RoadManager::PlaceRoad(int x, int y, RoadDirection dir) {
         }
     }
 
-void RoadManager::DeleteRoad(int x, int y) {
+void RoadManager::DeleteRoad(int x, int y, RoadDirection dir) {
     if (GetRoad(x, y)) {
         grid[x][y] = std::make_unique<EmptyTile>(x, y);
     }

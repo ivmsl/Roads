@@ -172,7 +172,7 @@ void RoadPlacement::RenderPreviewTile(int x, int y, RoadDirection direction) {
 void RoadPlacement::DeleteRoadPath(Vector2 gridPos) {
     int x = (int)gridPos.x; int y = (int)gridPos.y;
     if (roadManager->IsValidPosition(x, y)) {
-        roadManager->DeleteRoad(x, y);
+        // roadManager->DeleteRoad(x, y);
     }
 
 }
