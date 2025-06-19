@@ -68,6 +68,10 @@ void InputHandler::HandleRoadPlacement() {
     if (IsKeyDown(KEY_X)) {
         uiManager->ModeSelect(UIMode::ROAD_DELETE);
     }
+
+    if (IsKeyDown(KEY_ENTER)) {
+        uiManager->ModeSelect(UIMode::IDLE);
+    }
     
     Vector2 mousePos = GetMousePosition();
     Camera3D camera = cameraController->GetCamera();

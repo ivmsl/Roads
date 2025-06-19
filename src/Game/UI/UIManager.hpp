@@ -4,21 +4,13 @@
 #include "raylib.h"
 #include "Game/Roads/RoadManager.hpp"
 #include <functional>
-
-enum class UIMode {
-    IDLE,
-    ROAD_BUILD,
-    ROAD_DELETE,
-    ROAD_UPDATE,
-    DELETE,
-    INFO_SELECT
-};
+#include "Helpers.hpp"
 
 class UIManager {
     public:
 
         UIManager(RoadManager* rm);
-        using TraceAlgorytm = std::function<void(Vector2 startGridPos, Vector2 currentGridPos, RoadDirection direction, std::function<void(int x, int y, RoadDirection dir)> action)>; //alias aby korzystać z nazwy TraceAlgorytm
+        using TraceAlgorytm = std::function<void(Vector2 startGridPos, Vector2 currentGridPos, SelectionMetadata mtd, std::function<void(int x, int y, SelectionMetadata mtd)> action)>; //alias aby korzystać z nazwy TraceAlgorytm
 
     private:
         UIMode mode;
@@ -26,6 +18,7 @@ class UIManager {
         Vector2 startGridPos;
         Vector2 currentGridPos;
         RoadManager* roadManager;
+        SelectionMetadata metadata;
 
         TraceAlgorytm selectedAlgorytm;
     public:
@@ -45,7 +38,7 @@ class UIManager {
 
         //Render group 
         void RenderSelection();
-        void RenderSelectionBrick(int x, int y, RoadDirection direction);
+        void RenderSelectionBrick(int x, int y, SelectionMetadata mtd);
 
         inline RoadDirection DetermineRoadDirection();
 

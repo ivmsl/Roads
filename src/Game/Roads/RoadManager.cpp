@@ -11,22 +11,28 @@ RoadManager::RoadManager() {
         }
     }
 
-void RoadManager::PlaceRoad(int x, int y, RoadDirection dir) {
+void RoadManager::PlaceRoad(int x, int y, RoadPlacementMetadata mtd) {
+        RoadDirection dir = mtd.direction; 
         if (RoadTile* road = GetRoad(x, y)) {
             if (dir != road->GetDirection()) {
                 int connF = IntersectionConnection::START;
-                if (GetRoad(x + 1, y)) {
+                if (GetRoad(x + 1, y) || (dir == RoadDirection::HORIZONTAL && mtd.length > 0) || (dir == RoadDirection::HORISONTAL_MIN && mtd.length > 0)) {
                     connF |= IntersectionConnection::WEST;
+                    TraceLog(LOG_DEBUG, "Got a road on X + 1"); //!!!!
                 }
                 if (GetRoad(x - 1, y)) {
                     connF |= IntersectionConnection::EAST;
+                    TraceLog(LOG_DEBUG, "Got a road on X - 1");
                 }
-                if (GetRoad(x, y + 1) || dir == RoadDirection::HORIZONTAL) {
+                if (GetRoad(x, y + 1) || (dir == RoadDirection::VERTICAL && mtd.length > 0) || (dir == RoadDirection::VERTICAL_MIN && mtd.length > 0)) {
                     connF |= IntersectionConnection::NORTH;
+                    TraceLog(LOG_DEBUG, "Got a road on Y + 1"); ////!!!!!!!!
                 }
                 if (GetRoad(x, y - 1)) {
+                    TraceLog(LOG_DEBUG, "Got a road on Y - 1");
                     connF |= IntersectionConnection::SOUTH;
                 }
+
 
                 TraceLog(LOG_DEBUG, "connF is %d", connF);
 
@@ -40,7 +46,7 @@ void RoadManager::PlaceRoad(int x, int y, RoadDirection dir) {
         }
     }
 
-void RoadManager::DeleteRoad(int x, int y, RoadDirection dir) {
+void RoadManager::DeleteRoad(int x, int y, RoadPlacementMetadata mtd) {
     if (GetRoad(x, y)) {
         grid[x][y] = std::make_unique<EmptyTile>(x, y);
     }

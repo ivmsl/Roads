@@ -17,8 +17,8 @@ void GameLoop::Initialize(int screenW, int screenH) {
     
     if (roadManager) {
         TraceLog(LOG_DEBUG, "Road Manager inicialized!");
-        roadManager->PlaceRoad(5, 10, RoadDirection::HORIZONTAL);
-        roadManager->PlaceRoad(6, 10, RoadDirection::HORIZONTAL);
+        // roadManager->PlaceRoad(5, 10, RoadDirection::HORIZONTAL);
+        // roadManager->PlaceRoad(6, 10, RoadDirection::HORIZONTAL);
     }
 
     input = new InputHandler();

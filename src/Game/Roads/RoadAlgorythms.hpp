@@ -6,7 +6,9 @@
 class RoadAlgorythms {
     public:
         //static so it's avaliable without instantiating RA
-       static void LinePlacementAlgorythm(Vector2 startGridPos, Vector2 currentGridPos, RoadDirection direction, std::function<void(int x, int y, RoadDirection dir)> action) {
+       static void LinePlacementAlgorythm(Vector2 startGridPos, Vector2 currentGridPos, RoadPlacementMetadata mtd, std::function<void(int x, int y, RoadPlacementMetadata mtd)> action) {
+            RoadDirection direction = mtd.direction;
+            
             if (direction == RoadDirection::HORIZONTAL || direction == RoadDirection::HORISONTAL_MIN) {
                 // Place horizontal roads from start to current X position
                 int startX = std::min((int)startGridPos.x, (int)currentGridPos.x);
@@ -14,7 +16,8 @@ class RoadAlgorythms {
                 int y = (int)startGridPos.y;
                 
                 for (int x = startX; x <= endX; x++) {
-                        action(x, y, RoadDirection::HORIZONTAL);
+                        action(x, y, mtd);
+                        mtd.length--;
                 }
             } else {
                 // Place vertical roads from start to current Y position
@@ -23,7 +26,8 @@ class RoadAlgorythms {
                 int x = (int)startGridPos.x;
                 
                 for (int y = startY; y <= endY; y++) {
-                    action(x, y, RoadDirection::VERTICAL);
+                    action(x, y, mtd);
+                    mtd.length--;
                 }
             }
     }

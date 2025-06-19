@@ -40,7 +40,7 @@ void GravelRoad::Render() const {
         Color color;
         
         // Gravel road styling - brown/tan colors
-        if (direction == RoadDirection::HORIZONTAL) {
+        if (direction == RoadDirection::HORIZONTAL || direction == RoadDirection::HORISONTAL_MIN) {
             size = {10.0f, 1.5f, 8.0f};  // Slightly smaller than regular roads
             color = BROWN;
         } else { // VERTICAL
@@ -68,27 +68,26 @@ void IntersectionTile::Render() const {
 
         if (connectionFlags & IntersectionConnection::NORTH) {
             Vector3 smallBlock = {position.x, position.y, position.z + 4.5f};
-            Vector3 sizeSmall = {0.8f, 1.5, 8.0f};
+            Vector3 sizeSmall = {8.0f, 1.5, 0.8f};
             DrawCube(smallBlock, sizeSmall.x, sizeSmall.y, sizeSmall.z, GREEN);
         }
 
-        // if (connectionFlags & IntersectionConnection::SOUTH) {
-        //     Vector3 smallBlock = {position.x + 4.5f, position.y, position.z};
-        //     Vector3 sizeSmall = {0.8f, 1.5, 8.0f};
-        //     DrawCube(smallBlock, sizeSmall.x, sizeSmall.y, sizeSmall.z, YELLOW);
-        // }
-        // if (connectionFlags & IntersectionConnection::EAST) {
-        //     Vector3 smallBlock = {position.x, position.y, position.z + 4.5f};
-        //     Vector3 sizeSmall = {8.0f, 1.5, 0.8f};
-        //     DrawCube(smallBlock, sizeSmall.x, sizeSmall.y, sizeSmall.z, MAGENTA);
+        if (connectionFlags & IntersectionConnection::SOUTH) {
+            Vector3 smallBlock = {position.x, position.y, position.z - 4.5f};
+            Vector3 sizeSmall = {8.0f, 1.5, 0.8f};
+            DrawCube(smallBlock, sizeSmall.x, sizeSmall.y, sizeSmall.z, YELLOW);
+        }
+        if (connectionFlags & IntersectionConnection::EAST) {
+            Vector3 smallBlock = {position.x - 4.5f, position.y, position.z};
+            Vector3 sizeSmall = {0.8f, 1.5, 8.0f};
+            DrawCube(smallBlock, sizeSmall.x, sizeSmall.y, sizeSmall.z, MAGENTA);
+        }
+        if (connectionFlags & IntersectionConnection::WEST) {
 
-        // }
-        // if (connectionFlags & IntersectionConnection::WEST) {
-
-        //     Vector3 smallBlock = {position.x, position.y, position.z - 4.5f};
-        //     Vector3 sizeSmall = {8.0f, 1.5, 0.8f};
-        //     DrawCube(smallBlock, sizeSmall.x, sizeSmall.y, sizeSmall.z, PINK);
-        // }
+            Vector3 smallBlock = {position.x + 4.5f, position.y, position.z};
+            Vector3 sizeSmall = {0.8f, 1.5, 8.0f};
+            DrawCube(smallBlock, sizeSmall.x, sizeSmall.y, sizeSmall.z, PINK);
+        }
 
 
 

@@ -11,6 +11,7 @@ UIManager::UIManager(RoadManager* rm) {
     Vector2 startGridPos = {-1, -1};
     Vector2 currentGridPos = {-1, -1};
     roadManager = rm;
+    metadata = {0, RoadDirection::HORIZONTAL};
 
     SetAlgorytm(RoadAlgorythms::LinePlacementAlgorythm);
 }
@@ -65,15 +66,24 @@ void UIManager::EndSelection() {
 
 void UIManager::CompleteSelectionAction() {
     if (mode == UIMode::ROAD_BUILD) {
-         RoadDirection previewDirection = DetermineRoadDirection();
-         selectedAlgorytm(startGridPos, currentGridPos, previewDirection, [this](int x, int y, RoadDirection dir) {
-                    roadManager->PlaceRoad(x, y, dir); }
+
+        metadata.direction = DetermineRoadDirection();
+        if (metadata.direction == RoadDirection::HORIZONTAL || metadata.direction == RoadDirection::HORISONTAL_MIN) {
+            metadata.length = std::abs(startGridPos.x - currentGridPos.x);
+        } else {
+            metadata.length = std::abs(startGridPos.y - currentGridPos.y);
+        }
+
+        //  RoadDirection previewDirection = DetermineRoadDirection();
+         selectedAlgorytm(startGridPos, currentGridPos, metadata, [this](int x, int y, SelectionMetadata mtd) {
+                    roadManager->PlaceRoad(x, y, mtd); }
                     );
     }
     if (mode == UIMode::ROAD_DELETE) {
-        RoadDirection previewDirection = DetermineRoadDirection();
-        selectedAlgorytm(startGridPos, currentGridPos, previewDirection, [this](int x, int y, RoadDirection dir) {
-                    roadManager->DeleteRoad(x, y, dir); }
+        // RoadDirection previewDirection = DetermineRoadDirection();
+        metadata.direction = DetermineRoadDirection();
+        selectedAlgorytm(startGridPos, currentGridPos, metadata, [this](int x, int y, SelectionMetadata mtd) {
+                    roadManager->DeleteRoad(x, y, mtd); }
                     );
     }
 }
@@ -88,16 +98,18 @@ void UIManager::CancelSelection() {
 void UIManager::RenderSelection() {
     if (!isSelecting) return;
     
+    metadata.direction = DetermineRoadDirection();
+    //metadata.length
     // Determine preview direction
-    RoadDirection previewDirection = DetermineRoadDirection();
+    // RoadDirection previewDirection = DetermineRoadDirection();
     
     // Render preview path
-    selectedAlgorytm(startGridPos, currentGridPos, previewDirection, [this](int x, int y, RoadDirection dir) {
-                    RenderSelectionBrick(x, y, dir); }
+    selectedAlgorytm(startGridPos, currentGridPos, metadata, [this](int x, int y, SelectionMetadata mtd) {
+                    RenderSelectionBrick(x, y, mtd); }
                     );
 }
 
-void UIManager::RenderSelectionBrick(int x, int y, RoadDirection direction) {
+void UIManager::RenderSelectionBrick(int x, int y, SelectionMetadata mtd) {
     // Convert grid to world coordinates
     float worldX = x * 10.0f + 5.0f;  // Center of tile
     float worldZ = y * 10.0f + 5.0f;
@@ -108,7 +120,7 @@ void UIManager::RenderSelectionBrick(int x, int y, RoadDirection direction) {
     Color color;
     
     // Ghost/preview styling - semi-transparent
-    if (direction == RoadDirection::HORIZONTAL) {
+    if (mtd.direction == RoadDirection::HORIZONTAL || mtd.direction == RoadDirection::HORISONTAL_MIN) {
         size = {10.0f, 1.0f, 8.0f};
         color = {255, 255, 255, 100}; 
     } else {
