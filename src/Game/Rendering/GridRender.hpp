@@ -3,6 +3,11 @@
 
 #include "raylib.h"
 
+enum GridMode {
+    TOTAL,
+    CHUNK
+};
+
 class GridRenderer {
     private:
         bool gridVisible = true;
@@ -11,10 +16,13 @@ class GridRenderer {
         Color majorLineColor = GRAY;
         Color minorLineColor = LIGHTGRAY;
         int majorLineInterval = 10; // Every 10th line is major
+
+        GridMode mode;
     
     public:
         void Initialize();
         void Render();
+        void Render(BoundingBox chunkBounds);
         void ToggleVisibility();
         bool IsVisible() { return gridVisible; }
 };

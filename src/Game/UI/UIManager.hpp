@@ -3,13 +3,15 @@
 
 #include "raylib.h"
 #include "Game/Roads/RoadManager.hpp"
+#include "Game/Roads/RoadBuilderService.hpp"
 #include <functional>
 #include "Helpers.hpp"
+
 
 class UIManager {
     public:
 
-        UIManager(RoadManager* rm);
+        UIManager(RoadManager* rm, RoadBuilderService* rb);
         using TraceAlgorytm = std::function<void(Vector2 startGridPos, Vector2 currentGridPos, SelectionMetadata mtd, std::function<void(int x, int y, SelectionMetadata mtd)> action)>; //alias aby korzystać z nazwy TraceAlgorytm
 
     private:
@@ -19,12 +21,19 @@ class UIManager {
         Vector2 currentGridPos;
         RoadManager* roadManager;
         SelectionMetadata metadata;
+        RoadBuilderService* roadBuilder;
+
+        Color brickColor = WHITE;
+
+        // int nodeSize; //SQUARE node size;
+
 
         TraceAlgorytm selectedAlgorytm;
     public:
         //Selection group
 
         void SetAlgorytm(TraceAlgorytm alg);
+        void DrawTextInfo();
 
         Vector2 ScreenToGrid(Ray ray);
         void StartSelection(Vector2 gridPos);

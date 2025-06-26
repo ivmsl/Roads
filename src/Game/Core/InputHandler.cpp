@@ -69,6 +69,10 @@ void InputHandler::HandleRoadPlacement() {
         uiManager->ModeSelect(UIMode::ROAD_DELETE);
     }
 
+    if (IsKeyDown(KEY_N)) {
+        uiManager->ModeSelect(UIMode::MAKE_NODES);
+    }
+
     if (IsKeyDown(KEY_ENTER)) {
         uiManager->ModeSelect(UIMode::IDLE);
     }

@@ -6,14 +6,20 @@
 void GameLoop::Initialize(int screenW, int screenH) {
     InitWindow(screenW, screenH, "Games of Roads. Alpha 0.0.0");
     SetTargetFPS(60); 
+
+    worldHandler = new World();
+
     camera = new CameraController();
     camera->Initialize();
     grid = new GridRenderer();
     grid->Initialize();
 
-    
+
+    trafficNetwork = new TrafficNetwork(worldHandler);
+    roadBuilder = new RoadBuilderService(worldHandler, trafficNetwork);
+
     roadManager = new RoadManager();
-    uiManager = new UIManager(roadManager);
+    uiManager = new UIManager(roadManager, roadBuilder);
     
     if (roadManager) {
         TraceLog(LOG_DEBUG, "Road Manager inicialized!");
@@ -35,7 +41,8 @@ void GameLoop::Render() {
 
     BeginMode3D(camera->GetCamera());
         // Draw your 3D world here (grid, roads, etc.)
-        grid->Render();
+        // grid->Render();
+
         DrawCube({0, 0, 0}, 2, 2, 2, RED);  // Test cube at origin
         DrawCube({50.0f, 0.0f, 50.0f}, 10.0f, 10.0f, 10.0f, RED);
         DrawCubeWires({50.0f, 0.0f, 50.0f}, 10.0f, 10.0f, 10.0f, WHITE);
@@ -45,10 +52,10 @@ void GameLoop::Render() {
         DrawLine3D({0, 0, 0}, {0, 20, 0}, PURPLE);  // Y-axis reference (up)
         roadManager->Render();
         uiManager->RenderSelection();
-        
+        RenderDebugInfo();    
     EndMode3D();
-    RenderDebugInfo();
-    //DrawText("City Builder", 10, 10, 20, WHITE);
+    
+    uiManager->DrawTextInfo();
     DrawFPS(GetScreenWidth() - 80, 10);
     EndDrawing();
 }
@@ -60,6 +67,24 @@ void GameLoop::RenderDebugInfo() {
     Color labelColor = YELLOW;
 
     Camera3D cam = camera->GetCamera();
+    trafficNetwork->DebugNodesIterator();
+
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
+        Ray ray = GetScreenToWorldRay(GetMousePosition(), cam);
+        float t = -ray.position.y / ray.direction.y;
+        Vector3 hitPoint = {
+            ray.position.x + t * ray.direction.x,
+            0.0f,
+            ray.position.z + t * ray.direction.z
+        };
+
+        Vector3 chunk = worldHandler->GetChunkForPosition(hitPoint);
+        BoundingBox box = worldHandler->GetChunkBorders(chunk);
+        DrawBoundingBox(box, RED);
+        grid->Render(box);
+        // TraceLog(LOG_DEBUG, "Bounding box rendered for chunk (%f %f %f)", chunk.x, chunk.y, chunk.z);
+    }
+
     
     // Camera Position
     DrawText("=== CAMERA DEBUG ===", 10, yOffset, 14, labelColor);
@@ -80,14 +105,6 @@ void GameLoop::RenderDebugInfo() {
              10, yOffset, 12, textColor);
     yOffset += lineHeight;
     
-    DrawText(TextFormat("FOV:      %.2f", cam.fovy), 
-             10, yOffset, 12, textColor);
-    yOffset += lineHeight;
-    
-    DrawText(TextFormat("Projection: %s", 
-             cam.projection == CAMERA_ORTHOGRAPHIC ? "ORTHOGRAPHIC" : "PERSPECTIVE"), 
-             10, yOffset, 12, textColor);
-    yOffset += lineHeight + 5;
 }
 
 
@@ -105,6 +122,9 @@ void GameLoop::Update() {
 
 void GameLoop::Cleanup() {
     CloseWindow(); 
+    delete worldHandler;
+    delete trafficNetwork;
+    delete roadBuilder;
     delete uiManager;
     delete input;
     delete camera;

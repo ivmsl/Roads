@@ -6,6 +6,8 @@
 enum class UIMode {
     IDLE,
     ROAD_BUILD,
+    MAKE_NODES,
+    CHECK_OBST,
     ROAD_DELETE,
     ROAD_UPDATE,
     DELETE,

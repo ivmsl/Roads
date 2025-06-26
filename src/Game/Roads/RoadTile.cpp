@@ -90,6 +90,4 @@ void IntersectionTile::Render() const {
         }
 
 
-
-
 }

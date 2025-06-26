@@ -5,8 +5,12 @@
 #include "Game/Rendering/CameraController.hpp"
 #include "Game/Rendering/GridRender.hpp"
 #include "Game/Roads/RoadManager.hpp"
+#include "Game/Roads/RoadBuilderService.hpp"
 #include "Game/UI/UIManager.hpp"
 #include "InputHandler.hpp"
+#include "Game/World/World.hpp"
+#include "Game/Traffic/TrafficNode.hpp"
+
 
 
 class GameLoop {
@@ -15,7 +19,10 @@ class GameLoop {
         GridRenderer* grid;
         InputHandler* input;
         RoadManager* roadManager;
+        TrafficNetwork* trafficNetwork;
         UIManager* uiManager;
+        World* worldHandler;
+        RoadBuilderService* roadBuilder;
         bool isRunning;
 
     public: 
