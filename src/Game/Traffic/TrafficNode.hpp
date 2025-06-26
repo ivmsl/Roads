@@ -32,6 +32,8 @@ class TrafficNode : IDebuggable {
         void RenderDebug() const override;
         void SetDebugVisible(bool visible) override;
         bool IsDebugVisible() const override;
+
+        friend class TrafficNetwork;
 };
 
 class RoadSegment {
@@ -59,6 +61,8 @@ class TrafficNetwork {
         void DebugNodesIterator();
 
         RoadSegment* AddRoad(TrafficNode* node1, TrafficNode* node2);
+        void DeleteRoad(TrafficNode* node1, TrafficNode* node2);
+        ~TrafficNetwork();
 };
 
 #endif

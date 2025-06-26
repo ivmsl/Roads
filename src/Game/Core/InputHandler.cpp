@@ -83,7 +83,7 @@ void InputHandler::HandleRoadPlacement() {
     // Left mouse button for road placement
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         Ray ray = GetScreenToWorldRay(mousePos, camera);
-        Vector2 gridPos = uiManager->ScreenToGrid(ray);
+        Vector2 gridPos = uiManager->ScreenToWorld(ray);
         uiManager->StartSelection(gridPos);
 
         // Vector2 gridPos = roadPlacement->ScreenToGrid(mousePos, camera);
@@ -98,7 +98,7 @@ void InputHandler::HandleRoadPlacement() {
         // Vector2 gridPos = roadPlacement->ScreenToGrid(mousePos, camera);
         // roadPlacement->UpdatePlacement(gridPos);
         Ray ray = GetScreenToWorldRay(mousePos, camera);
-        Vector2 gridPos = uiManager->ScreenToGrid(ray);
+        Vector2 gridPos = uiManager->ScreenToWorld(ray);
         uiManager->UpdateSelection(gridPos);
     }
     

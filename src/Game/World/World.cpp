@@ -41,7 +41,7 @@ TrafficNode* World::FindNearestNode(Vector3 worldPosition, float maxRadius) {
     auto it = nodes.find(chunk);
     
     if (it == nodes.end() || it->second.empty()) {
-        TraceLog(LOG_DEBUG, "No nodes found???");
+        // TraceLog(LOG_DEBUG, "No nodes found???");
         return nullptr; // No nodes in this chunk
     }
 
@@ -61,7 +61,7 @@ TrafficNode* World::FindNearestNode(Vector3 worldPosition, float maxRadius) {
         }
     }
 
-    TraceLog(LOG_DEBUG, "Checking was ended....");
+    // TraceLog(LOG_DEBUG, "Checking was ended....");
     
     return nearestNode;
 

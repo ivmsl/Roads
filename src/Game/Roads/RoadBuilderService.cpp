@@ -45,8 +45,8 @@ void RoadBuilderService::BuildRoad(Vector3 startPos, Vector3 endPos) {
         i++;
     }
     
-    for (i; i < numSteps; i++) {
-        float t = (float)i / (numSteps - 1);  // t goes from 0 to 1
+    for (; i < numSteps; i++) {
+        float t = (numSteps > 1) ? (float)i / (numSteps - 1) : 0.0f; // t goes from 0 to 1
         TraceLog(LOG_DEBUG, "Iteration %i", i);
         currentPos = {
             startPos.x + dx * t,
@@ -93,7 +93,7 @@ TrafficNode* RoadBuilderService::CheckIfObstructed(Vector3 startPos, Vector3 end
     // int dx = std::abs(startPos.x - endPos.x) / segmentSpacing;
     // int dz = std::abs(startPos.z - endPos.z) / segmentSpacing;
     Vector3 currentPos = startPos;
-    Vector3 currChunk;
+    // Vector3 currChunk;
 
     float dx = endPos.x - startPos.x;
     float dz = endPos.z - startPos.z;
@@ -103,7 +103,7 @@ TrafficNode* RoadBuilderService::CheckIfObstructed(Vector3 startPos, Vector3 end
     int numSteps = (int)(totalDistance / segmentSpacing) + 1;
 
         for (int i = 0; i < numSteps; i++) {
-        float t = (float)i / (numSteps - 1);  // t goes from 0 to 1
+        float t = (numSteps > 1) ? (float)i / (numSteps - 1) : 0.0f;  // t goes from 0 to 1
         
         Vector3 currentPos = {
             startPos.x + dx * t,
@@ -111,7 +111,7 @@ TrafficNode* RoadBuilderService::CheckIfObstructed(Vector3 startPos, Vector3 end
             startPos.z + dz * t
         };
         
-        Vector3 currChunk = world->GetChunkForPosition(currentPos);
+        // Vector3 currChunk = world->GetChunkForPosition(currentPos);
         if (TrafficNode* node = world->FindNearestNode(currentPos)) {
             TraceLog(LOG_DEBUG, "Found obstruction at step %d: %f %f %f", 
                      i, currentPos.x, currentPos.y, currentPos.z);
@@ -157,7 +157,7 @@ TrafficNode* RoadBuilderService::CheckIfObstructed(Vector3 startPos, Vector3 end
 
 bool RoadBuilderService::CheckIfObstructedOnTheLine(Vector3 startPos, Vector3 endPos) {
     Vector3 currentPos = startPos;
-    Vector3 currChunk;
+    // Vector3 currChunk;
 
     float dx = endPos.x - startPos.x;
     float dz = endPos.z - startPos.z;
@@ -167,16 +167,16 @@ bool RoadBuilderService::CheckIfObstructedOnTheLine(Vector3 startPos, Vector3 en
     int numSteps = (int)(totalDistance / segmentSpacing);
 
     for (int i = 1; i < (numSteps - 1); i++) {
-        float t = (float)i / (numSteps - 1);  // t goes from 0 to 1
+        float t = (numSteps > 1) ? (float)i / (numSteps - 1) : 0.0f; // t goes from 0 to 1
         
-        Vector3 currentPos = {
+        currentPos = {
             startPos.x + dx * t,
             startPos.y,  // Keep Y constant
             startPos.z + dz * t
         };
         
-        Vector3 currChunk = world->GetChunkForPosition(currentPos);
-        if (TrafficNode* node = world->FindNearestNode(currentPos)) {
+        // Vector3 currChunk = world->GetChunkForPosition(currentPos);
+        if (world->FindNearestNode(currentPos)) {
             TraceLog(LOG_DEBUG, "Found obstruction in the middle at step %d: %f %f %f", 
                     i, currentPos.x, currentPos.y, currentPos.z);
             return true;
@@ -190,12 +190,12 @@ bool RoadBuilderService::CheckIfObstructedOnTheLine(Vector3 startPos, Vector3 en
 RoadBuilderService::NodeHeadTailInfo RoadBuilderService::CheckNodesStartFinish(Vector3 startPos, Vector3 endPos) {
      NodeHeadTailInfo conn = NO_CONNECTION;
      
-     Vector3 currChunk = world->GetChunkForPosition(startPos);
+    //  Vector3 currChunk = world->GetChunkForPosition(startPos);
      if (world->FindNearestNode(startPos)) {
         conn = (NodeHeadTailInfo)1;
      }
      
-     currChunk = world->GetChunkForPosition(endPos);
+    //  currChunk = world->GetChunkForPosition(endPos);
      if (world->FindNearestNode(endPos)) {
         conn = (NodeHeadTailInfo)((int)conn + 2);
      }

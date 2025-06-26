@@ -382,7 +382,7 @@ RMAPI Vector2 Vector2Divide(Vector2 v1, Vector2 v2)
 // Normalize provided vector
 RMAPI Vector2 Vector2Normalize(Vector2 v)
 {
-    Vector2 result = { 0 };
+    Vector2 result = { 0.0f, 0.0f };
     float length = sqrtf((v.x*v.x) + (v.y*v.y));
 
     if (length > 0)
@@ -398,7 +398,7 @@ RMAPI Vector2 Vector2Normalize(Vector2 v)
 // Transforms a Vector2 by a given Matrix
 RMAPI Vector2 Vector2Transform(Vector2 v, Matrix mat)
 {
-    Vector2 result = { 0 };
+    Vector2 result = { 0.0f, 0.0f };
 
     float x = v.x;
     float y = v.y;
@@ -413,7 +413,7 @@ RMAPI Vector2 Vector2Transform(Vector2 v, Matrix mat)
 // Calculate linear interpolation between two vectors
 RMAPI Vector2 Vector2Lerp(Vector2 v1, Vector2 v2, float amount)
 {
-    Vector2 result = { 0 };
+    Vector2 result = { 0.0f, 0.0f };
 
     result.x = v1.x + amount*(v2.x - v1.x);
     result.y = v1.y + amount*(v2.y - v1.y);
@@ -424,7 +424,7 @@ RMAPI Vector2 Vector2Lerp(Vector2 v1, Vector2 v2, float amount)
 // Calculate reflected vector to normal
 RMAPI Vector2 Vector2Reflect(Vector2 v, Vector2 normal)
 {
-    Vector2 result = { 0 };
+    Vector2 result = { 0.0f, 0.0f };
 
     float dotProduct = (v.x*normal.x + v.y*normal.y); // Dot product
 
@@ -437,7 +437,7 @@ RMAPI Vector2 Vector2Reflect(Vector2 v, Vector2 normal)
 // Get min value for each pair of components
 RMAPI Vector2 Vector2Min(Vector2 v1, Vector2 v2)
 {
-    Vector2 result = { 0 };
+    Vector2 result = { 0.0f, 0.0f };
 
     result.x = fminf(v1.x, v2.x);
     result.y = fminf(v1.y, v2.y);
@@ -448,7 +448,7 @@ RMAPI Vector2 Vector2Min(Vector2 v1, Vector2 v2)
 // Get max value for each pair of components
 RMAPI Vector2 Vector2Max(Vector2 v1, Vector2 v2)
 {
-    Vector2 result = { 0 };
+    Vector2 result = { 0.0f, 0.0f };
 
     result.x = fmaxf(v1.x, v2.x);
     result.y = fmaxf(v1.y, v2.y);
@@ -459,7 +459,7 @@ RMAPI Vector2 Vector2Max(Vector2 v1, Vector2 v2)
 // Rotate vector by angle
 RMAPI Vector2 Vector2Rotate(Vector2 v, float angle)
 {
-    Vector2 result = { 0 };
+    Vector2 result = { 0.0f, 0.0f };
 
     float cosres = cosf(angle);
     float sinres = sinf(angle);
@@ -473,7 +473,7 @@ RMAPI Vector2 Vector2Rotate(Vector2 v, float angle)
 // Move Vector towards target
 RMAPI Vector2 Vector2MoveTowards(Vector2 v, Vector2 target, float maxDistance)
 {
-    Vector2 result = { 0 };
+    Vector2 result = { 0.0f, 0.0f };
 
     float dx = target.x - v.x;
     float dy = target.y - v.y;
@@ -501,7 +501,7 @@ RMAPI Vector2 Vector2Invert(Vector2 v)
 // min and max values specified by the given vectors
 RMAPI Vector2 Vector2Clamp(Vector2 v, Vector2 min, Vector2 max)
 {
-    Vector2 result = { 0 };
+    Vector2 result = { 0.0f, 0.0f };
 
     result.x = fminf(max.x, fmaxf(min.x, v.x));
     result.y = fminf(max.y, fmaxf(min.y, v.y));
@@ -556,7 +556,7 @@ RMAPI int Vector2Equals(Vector2 p, Vector2 q)
 //    to the refractive index of the medium on the other side of the surface
 RMAPI Vector2 Vector2Refract(Vector2 v, Vector2 n, float r)
 {
-    Vector2 result = { 0 };
+    Vector2 result = { 0.0f, 0.0f };
 
     float dot = v.x*n.x + v.y*n.y;
     float d = 1.0f - r*r*(1.0f - dot*dot);
@@ -653,7 +653,7 @@ RMAPI Vector3 Vector3CrossProduct(Vector3 v1, Vector3 v2)
 // Calculate one vector perpendicular vector
 RMAPI Vector3 Vector3Perpendicular(Vector3 v)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     float min = fabsf(v.x);
     Vector3 cardinalAxis = {1.0f, 0.0f, 0.0f};
@@ -779,7 +779,7 @@ RMAPI Vector3 Vector3Normalize(Vector3 v)
 //Calculate the projection of the vector v1 on to v2
 RMAPI Vector3 Vector3Project(Vector3 v1, Vector3 v2)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     float v1dv2 = (v1.x*v2.x + v1.y*v2.y + v1.z*v2.z);
     float v2dv2 = (v2.x*v2.x + v2.y*v2.y + v2.z*v2.z);
@@ -796,7 +796,7 @@ RMAPI Vector3 Vector3Project(Vector3 v1, Vector3 v2)
 //Calculate the rejection of the vector v1 on to v2
 RMAPI Vector3 Vector3Reject(Vector3 v1, Vector3 v2)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     float v1dv2 = (v1.x*v2.x + v1.y*v2.y + v1.z*v2.z);
     float v2dv2 = (v2.x*v2.x + v2.y*v2.y + v2.z*v2.z);
@@ -848,7 +848,7 @@ RMAPI void Vector3OrthoNormalize(Vector3 *v1, Vector3 *v2)
 // Transforms a Vector3 by a given Matrix
 RMAPI Vector3 Vector3Transform(Vector3 v, Matrix mat)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     float x = v.x;
     float y = v.y;
@@ -864,7 +864,7 @@ RMAPI Vector3 Vector3Transform(Vector3 v, Matrix mat)
 // Transform a vector by quaternion rotation
 RMAPI Vector3 Vector3RotateByQuaternion(Vector3 v, Quaternion q)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     result.x = v.x*(q.x*q.x + q.w*q.w - q.y*q.y - q.z*q.z) + v.y*(2*q.x*q.y - 2*q.w*q.z) + v.z*(2*q.x*q.z + 2*q.w*q.y);
     result.y = v.x*(2*q.w*q.z + 2*q.x*q.y) + v.y*(q.w*q.w - q.x*q.x + q.y*q.y - q.z*q.z) + v.z*(-2*q.w*q.x + 2*q.y*q.z);
@@ -928,7 +928,7 @@ RMAPI Vector3 Vector3RotateByAxisAngle(Vector3 v, Vector3 axis, float angle)
 // Move Vector towards target
 RMAPI Vector3 Vector3MoveTowards(Vector3 v, Vector3 target, float maxDistance)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     float dx = target.x - v.x;
     float dy = target.y - v.y;
@@ -949,7 +949,7 @@ RMAPI Vector3 Vector3MoveTowards(Vector3 v, Vector3 target, float maxDistance)
 // Calculate linear interpolation between two vectors
 RMAPI Vector3 Vector3Lerp(Vector3 v1, Vector3 v2, float amount)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     result.x = v1.x + amount*(v2.x - v1.x);
     result.y = v1.y + amount*(v2.y - v1.y);
@@ -962,7 +962,7 @@ RMAPI Vector3 Vector3Lerp(Vector3 v1, Vector3 v2, float amount)
 // as described in the GLTF 2.0 specification: https://registry.khronos.org/glTF/specs/2.0/glTF-2.0.html#interpolation-cubic
 RMAPI Vector3 Vector3CubicHermite(Vector3 v1, Vector3 tangent1, Vector3 v2, Vector3 tangent2, float amount)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     float amountPow2 = amount*amount;
     float amountPow3 = amount*amount*amount;
@@ -977,7 +977,7 @@ RMAPI Vector3 Vector3CubicHermite(Vector3 v1, Vector3 tangent1, Vector3 v2, Vect
 // Calculate reflected vector to normal
 RMAPI Vector3 Vector3Reflect(Vector3 v, Vector3 normal)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     // I is the original vector
     // N is the normal of the incident plane
@@ -995,7 +995,7 @@ RMAPI Vector3 Vector3Reflect(Vector3 v, Vector3 normal)
 // Get min value for each pair of components
 RMAPI Vector3 Vector3Min(Vector3 v1, Vector3 v2)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     result.x = fminf(v1.x, v2.x);
     result.y = fminf(v1.y, v2.y);
@@ -1007,7 +1007,7 @@ RMAPI Vector3 Vector3Min(Vector3 v1, Vector3 v2)
 // Get max value for each pair of components
 RMAPI Vector3 Vector3Max(Vector3 v1, Vector3 v2)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     result.x = fmaxf(v1.x, v2.x);
     result.y = fmaxf(v1.y, v2.y);
@@ -1020,7 +1020,7 @@ RMAPI Vector3 Vector3Max(Vector3 v1, Vector3 v2)
 // NOTE: Assumes P is on the plane of the triangle
 RMAPI Vector3 Vector3Barycenter(Vector3 p, Vector3 a, Vector3 b, Vector3 c)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     Vector3 v0 = { b.x - a.x, b.y - a.y, b.z - a.z };   // Vector3Subtract(b, a)
     Vector3 v1 = { c.x - a.x, c.y - a.y, c.z - a.z };   // Vector3Subtract(c, a)
@@ -1044,7 +1044,7 @@ RMAPI Vector3 Vector3Barycenter(Vector3 p, Vector3 a, Vector3 b, Vector3 c)
 // NOTE: We are avoiding calling other raymath functions despite available
 RMAPI Vector3 Vector3Unproject(Vector3 source, Matrix projection, Matrix view)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     // Calculate unprojected matrix (multiply view matrix by projection matrix) and invert it
     Matrix matViewProj = {      // MatrixMultiply(view, projection);
@@ -1148,7 +1148,7 @@ RMAPI Vector3 Vector3Invert(Vector3 v)
 // min and max values specified by the given vectors
 RMAPI Vector3 Vector3Clamp(Vector3 v, Vector3 min, Vector3 max)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     result.x = fminf(max.x, fmaxf(min.x, v.x));
     result.y = fminf(max.y, fmaxf(min.y, v.y));
@@ -1206,7 +1206,7 @@ RMAPI int Vector3Equals(Vector3 p, Vector3 q)
 //    to the refractive index of the medium on the other side of the surface
 RMAPI Vector3 Vector3Refract(Vector3 v, Vector3 n, float r)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f };
 
     float dot = v.x*n.x + v.y*n.y + v.z*n.z;
     float d = 1.0f - r*r*(1.0f - dot*dot);
@@ -1352,7 +1352,7 @@ RMAPI Vector4 Vector4Divide(Vector4 v1, Vector4 v2)
 // Normalize provided vector
 RMAPI Vector4 Vector4Normalize(Vector4 v)
 {
-    Vector4 result = { 0 };
+    Vector4 result = { 0.0f, 0.0f, 0.0f, 0.0f };
     float length = sqrtf((v.x*v.x) + (v.y*v.y) + (v.z*v.z) + (v.w*v.w));
 
     if (length > 0)
@@ -1370,7 +1370,7 @@ RMAPI Vector4 Vector4Normalize(Vector4 v)
 // Get min value for each pair of components
 RMAPI Vector4 Vector4Min(Vector4 v1, Vector4 v2)
 {
-    Vector4 result = { 0 };
+    Vector4 result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     result.x = fminf(v1.x, v2.x);
     result.y = fminf(v1.y, v2.y);
@@ -1383,7 +1383,7 @@ RMAPI Vector4 Vector4Min(Vector4 v1, Vector4 v2)
 // Get max value for each pair of components
 RMAPI Vector4 Vector4Max(Vector4 v1, Vector4 v2)
 {
-    Vector4 result = { 0 };
+    Vector4 result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     result.x = fmaxf(v1.x, v2.x);
     result.y = fmaxf(v1.y, v2.y);
@@ -1396,7 +1396,7 @@ RMAPI Vector4 Vector4Max(Vector4 v1, Vector4 v2)
 // Calculate linear interpolation between two vectors
 RMAPI Vector4 Vector4Lerp(Vector4 v1, Vector4 v2, float amount)
 {
-    Vector4 result = { 0 };
+    Vector4 result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     result.x = v1.x + amount*(v2.x - v1.x);
     result.y = v1.y + amount*(v2.y - v1.y);
@@ -1409,7 +1409,7 @@ RMAPI Vector4 Vector4Lerp(Vector4 v1, Vector4 v2, float amount)
 // Move Vector towards target
 RMAPI Vector4 Vector4MoveTowards(Vector4 v, Vector4 target, float maxDistance)
 {
-    Vector4 result = { 0 };
+    Vector4 result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     float dx = target.x - v.x;
     float dy = target.y - v.y;
@@ -1487,7 +1487,10 @@ RMAPI float MatrixTrace(Matrix mat)
 // Transposes provided matrix
 RMAPI Matrix MatrixTranspose(Matrix mat)
 {
-    Matrix result = { 0 };
+    Matrix result = { 1.0f, 0.0f, 0.0f, 0.0f,
+                      0.0f, 1.0f, 0.0f, 0.0f,
+                      0.0f, 0.0f, 1.0f, 0.0f,
+                      0.0f, 0.0f, 0.0f, 1.0f };
 
     result.m0 = mat.m0;
     result.m1 = mat.m4;
@@ -1512,7 +1515,10 @@ RMAPI Matrix MatrixTranspose(Matrix mat)
 // Invert provided matrix
 RMAPI Matrix MatrixInvert(Matrix mat)
 {
-    Matrix result = { 0 };
+    Matrix result = { 1.0f, 0.0f, 0.0f, 0.0f,
+                      0.0f, 1.0f, 0.0f, 0.0f,
+                      0.0f, 0.0f, 1.0f, 0.0f,
+                      0.0f, 0.0f, 0.0f, 1.0f };
 
     // Cache the matrix values (speed optimization)
     float a00 = mat.m0, a01 = mat.m1, a02 = mat.m2, a03 = mat.m3;
@@ -1570,7 +1576,10 @@ RMAPI Matrix MatrixIdentity(void)
 // Add two matrices
 RMAPI Matrix MatrixAdd(Matrix left, Matrix right)
 {
-    Matrix result = { 0 };
+    Matrix result = { 1.0f, 0.0f, 0.0f, 0.0f,
+                      0.0f, 1.0f, 0.0f, 0.0f,
+                      0.0f, 0.0f, 1.0f, 0.0f,
+                      0.0f, 0.0f, 0.0f, 1.0f };
 
     result.m0 = left.m0 + right.m0;
     result.m1 = left.m1 + right.m1;
@@ -1595,7 +1604,10 @@ RMAPI Matrix MatrixAdd(Matrix left, Matrix right)
 // Subtract two matrices (left - right)
 RMAPI Matrix MatrixSubtract(Matrix left, Matrix right)
 {
-    Matrix result = { 0 };
+    Matrix result = { 1.0f, 0.0f, 0.0f, 0.0f,
+                      0.0f, 1.0f, 0.0f, 0.0f,
+                      0.0f, 0.0f, 1.0f, 0.0f,
+                      0.0f, 0.0f, 0.0f, 1.0f };
 
     result.m0 = left.m0 - right.m0;
     result.m1 = left.m1 - right.m1;
@@ -1621,7 +1633,10 @@ RMAPI Matrix MatrixSubtract(Matrix left, Matrix right)
 // NOTE: When multiplying matrices... the order matters!
 RMAPI Matrix MatrixMultiply(Matrix left, Matrix right)
 {
-    Matrix result = { 0 };
+    Matrix result = { 1.0f, 0.0f, 0.0f, 0.0f,
+                      0.0f, 1.0f, 0.0f, 0.0f,
+                      0.0f, 0.0f, 1.0f, 0.0f,
+                      0.0f, 0.0f, 0.0f, 1.0f };
 
     result.m0 = left.m0*right.m0 + left.m1*right.m4 + left.m2*right.m8 + left.m3*right.m12;
     result.m1 = left.m0*right.m1 + left.m1*right.m5 + left.m2*right.m9 + left.m3*right.m13;
@@ -1658,7 +1673,10 @@ RMAPI Matrix MatrixTranslate(float x, float y, float z)
 // NOTE: Angle should be provided in radians
 RMAPI Matrix MatrixRotate(Vector3 axis, float angle)
 {
-    Matrix result = { 0 };
+    Matrix result = { 1.0f, 0.0f, 0.0f, 0.0f,
+                      0.0f, 1.0f, 0.0f, 0.0f,
+                      0.0f, 0.0f, 1.0f, 0.0f,
+                      0.0f, 0.0f, 0.0f, 1.0f };;
 
     float x = axis.x, y = axis.y, z = axis.z;
 
@@ -1795,7 +1813,10 @@ RMAPI Matrix MatrixRotateXYZ(Vector3 angle)
 // NOTE: Angle must be provided in radians
 RMAPI Matrix MatrixRotateZYX(Vector3 angle)
 {
-    Matrix result = { 0 };
+    Matrix result = { 1.0f, 0.0f, 0.0f, 0.0f,
+                      0.0f, 1.0f, 0.0f, 0.0f,
+                      0.0f, 0.0f, 1.0f, 0.0f,
+                      0.0f, 0.0f, 0.0f, 1.0f };
 
     float cz = cosf(angle.z);
     float sz = sinf(angle.z);
@@ -1841,7 +1862,10 @@ RMAPI Matrix MatrixScale(float x, float y, float z)
 // Get perspective projection matrix
 RMAPI Matrix MatrixFrustum(double left, double right, double bottom, double top, double nearPlane, double farPlane)
 {
-    Matrix result = { 0 };
+    Matrix result = { 1.0f, 0.0f, 0.0f, 0.0f,
+                      0.0f, 1.0f, 0.0f, 0.0f,
+                      0.0f, 0.0f, 1.0f, 0.0f,
+                      0.0f, 0.0f, 0.0f, 1.0f };
 
     float rl = (float)(right - left);
     float tb = (float)(top - bottom);
@@ -1874,7 +1898,7 @@ RMAPI Matrix MatrixFrustum(double left, double right, double bottom, double top,
 // NOTE: Fovy angle must be provided in radians
 RMAPI Matrix MatrixPerspective(double fovY, double aspect, double nearPlane, double farPlane)
 {
-    Matrix result = { 0 };
+    Matrix result = { 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f};
 
     double top = nearPlane*tan(fovY*0.5);
     double bottom = -top;
@@ -1900,7 +1924,10 @@ RMAPI Matrix MatrixPerspective(double fovY, double aspect, double nearPlane, dou
 // Get orthographic projection matrix
 RMAPI Matrix MatrixOrtho(double left, double right, double bottom, double top, double nearPlane, double farPlane)
 {
-    Matrix result = { 0 };
+    Matrix result = { 1.0f, 0.0f, 0.0f, 0.0f,
+                      0.0f, 1.0f, 0.0f, 0.0f,
+                      0.0f, 0.0f, 1.0f, 0.0f,
+                      0.0f, 0.0f, 0.0f, 1.0f };
 
     float rl = (float)(right - left);
     float tb = (float)(top - bottom);
@@ -1929,7 +1956,10 @@ RMAPI Matrix MatrixOrtho(double left, double right, double bottom, double top, d
 // Get camera look-at matrix (view matrix)
 RMAPI Matrix MatrixLookAt(Vector3 eye, Vector3 target, Vector3 up)
 {
-    Matrix result = { 0 };
+    Matrix result = { 1.0f, 0.0f, 0.0f, 0.0f,
+                      0.0f, 1.0f, 0.0f, 0.0f,
+                      0.0f, 0.0f, 1.0f, 0.0f,
+                      0.0f, 0.0f, 0.0f, 1.0f };
 
     float length = 0.0f;
     float ilength = 0.0f;
@@ -2061,7 +2091,7 @@ RMAPI float QuaternionLength(Quaternion q)
 // Normalize provided quaternion
 RMAPI Quaternion QuaternionNormalize(Quaternion q)
 {
-    Quaternion result = { 0 };
+    Quaternion result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     float length = sqrtf(q.x*q.x + q.y*q.y + q.z*q.z + q.w*q.w);
     if (length == 0.0f) length = 1.0f;
@@ -2098,7 +2128,7 @@ RMAPI Quaternion QuaternionInvert(Quaternion q)
 // Calculate two quaternion multiplication
 RMAPI Quaternion QuaternionMultiply(Quaternion q1, Quaternion q2)
 {
-    Quaternion result = { 0 };
+    Quaternion result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     float qax = q1.x, qay = q1.y, qaz = q1.z, qaw = q1.w;
     float qbx = q2.x, qby = q2.y, qbz = q2.z, qbw = q2.w;
@@ -2114,7 +2144,7 @@ RMAPI Quaternion QuaternionMultiply(Quaternion q1, Quaternion q2)
 // Scale quaternion by float value
 RMAPI Quaternion QuaternionScale(Quaternion q, float mul)
 {
-    Quaternion result = { 0 };
+    Quaternion result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     result.x = q.x*mul;
     result.y = q.y*mul;
@@ -2135,7 +2165,7 @@ RMAPI Quaternion QuaternionDivide(Quaternion q1, Quaternion q2)
 // Calculate linear interpolation between two quaternions
 RMAPI Quaternion QuaternionLerp(Quaternion q1, Quaternion q2, float amount)
 {
-    Quaternion result = { 0 };
+    Quaternion result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     result.x = q1.x + amount*(q2.x - q1.x);
     result.y = q1.y + amount*(q2.y - q1.y);
@@ -2148,7 +2178,7 @@ RMAPI Quaternion QuaternionLerp(Quaternion q1, Quaternion q2, float amount)
 // Calculate slerp-optimized interpolation between two quaternions
 RMAPI Quaternion QuaternionNlerp(Quaternion q1, Quaternion q2, float amount)
 {
-    Quaternion result = { 0 };
+    Quaternion result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     // QuaternionLerp(q1, q2, amount)
     result.x = q1.x + amount*(q2.x - q1.x);
@@ -2173,7 +2203,7 @@ RMAPI Quaternion QuaternionNlerp(Quaternion q1, Quaternion q2, float amount)
 // Calculates spherical linear interpolation between two quaternions
 RMAPI Quaternion QuaternionSlerp(Quaternion q1, Quaternion q2, float amount)
 {
-    Quaternion result = { 0 };
+    Quaternion result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 #if !defined(EPSILON)
     #define EPSILON 0.000001f
@@ -2232,7 +2262,7 @@ RMAPI Quaternion QuaternionCubicHermiteSpline(Quaternion q1, Quaternion outTange
     Quaternion p1 = QuaternionScale(q2, h01);
     Quaternion m1 = QuaternionScale(inTangent2, h11);
 
-    Quaternion result = { 0 };
+    Quaternion result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     result = QuaternionAdd(p0, m0);
     result = QuaternionAdd(result, p1);
@@ -2245,7 +2275,7 @@ RMAPI Quaternion QuaternionCubicHermiteSpline(Quaternion q1, Quaternion outTange
 // Calculate quaternion based on the rotation from one vector to another
 RMAPI Quaternion QuaternionFromVector3ToVector3(Vector3 from, Vector3 to)
 {
-    Quaternion result = { 0 };
+    Quaternion result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     float cos2Theta = (from.x*to.x + from.y*to.y + from.z*to.z);    // Vector3DotProduct(from, to)
     Vector3 cross = { from.y*to.z - from.z*to.y, from.z*to.x - from.x*to.z, from.x*to.y - from.y*to.x }; // Vector3CrossProduct(from, to)
@@ -2273,7 +2303,7 @@ RMAPI Quaternion QuaternionFromVector3ToVector3(Vector3 from, Vector3 to)
 // Get a quaternion for a given rotation matrix
 RMAPI Quaternion QuaternionFromMatrix(Matrix mat)
 {
-    Quaternion result = { 0 };
+    Quaternion result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     float fourWSquaredMinus1 = mat.m0  + mat.m5 + mat.m10;
     float fourXSquaredMinus1 = mat.m0  - mat.m5 - mat.m10;
@@ -2453,7 +2483,7 @@ RMAPI void QuaternionToAxisAngle(Quaternion q, Vector3 *outAxis, float *outAngle
 // NOTE: Rotation order is ZYX
 RMAPI Quaternion QuaternionFromEuler(float pitch, float yaw, float roll)
 {
-    Quaternion result = { 0 };
+    Quaternion result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     float x0 = cosf(pitch*0.5f);
     float x1 = sinf(pitch*0.5f);
@@ -2474,7 +2504,7 @@ RMAPI Quaternion QuaternionFromEuler(float pitch, float yaw, float roll)
 // NOTE: Angles are returned in a Vector3 struct in radians
 RMAPI Vector3 QuaternionToEuler(Quaternion q)
 {
-    Vector3 result = { 0 };
+    Vector3 result = { 0.0f, 0.0f, 0.0f};
 
     // Roll (x-axis rotation)
     float x0 = 2.0f*(q.w*q.x + q.y*q.z);
@@ -2498,7 +2528,7 @@ RMAPI Vector3 QuaternionToEuler(Quaternion q)
 // Transform a quaternion given a transformation matrix
 RMAPI Quaternion QuaternionTransform(Quaternion q, Matrix mat)
 {
-    Quaternion result = { 0 };
+    Quaternion result = { 0.0f, 0.0f, 0.0f, 0.0f };
 
     result.x = mat.m0*q.x + mat.m4*q.y + mat.m8*q.z + mat.m12*q.w;
     result.y = mat.m1*q.x + mat.m5*q.y + mat.m9*q.z + mat.m13*q.w;

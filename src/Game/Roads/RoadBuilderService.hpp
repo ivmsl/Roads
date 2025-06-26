@@ -5,8 +5,8 @@
 
 class RoadBuilderService {
     private:
-        int length; //w blokach
-        TrafficNode* lastNode; //in line
+        // int length; //w blokach
+        // TrafficNode* lastNode; //in line
         int nodeSpacing;
         int segmentSpacing;
         

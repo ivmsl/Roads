@@ -35,7 +35,7 @@ class UIManager {
         void SetAlgorytm(TraceAlgorytm alg);
         void DrawTextInfo();
 
-        Vector2 ScreenToGrid(Ray ray);
+        Vector2 ScreenToWorld(Ray ray);
         void StartSelection(Vector2 gridPos);
         void EndSelection();
         void UpdateSelection(Vector2 gridPos);

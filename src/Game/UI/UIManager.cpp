@@ -23,7 +23,7 @@ void UIManager::SetAlgorytm(TraceAlgorytm alg) {
     selectedAlgorytm = alg;
 }
 
-Vector2 UIManager::ScreenToGrid(Ray ray) {
+Vector2 UIManager::ScreenToWorld(Ray ray) {
 
     // Find where ray hits the ground plane (y = 0)
     float t = -ray.position.y / ray.direction.y;
@@ -161,8 +161,8 @@ void UIManager::RenderSelection() {
     metadata.direction = DetermineRoadDirection();
     int numSteps = (int)(totalDistance / 10); //byl +1 ale koniec potem dodalismy
 
-     for (int i; i < numSteps; i++) {
-        float t = (float)i / (numSteps - 1);  // t goes from 0 to 1
+     for (int i = 0; i < numSteps; i++) {
+        float t = (numSteps > 1) ? (float)i / (numSteps - 1) : 0.0f; // t goes from 0 to 1
         
         
         float x = startGridPos.x + dx * t;

@@ -52,21 +52,57 @@ TrafficNode* TrafficNetwork::CreateNode(Vector3 position) {
     TRACE_COORD(position);
 
     if (!regNode) {
-        nodes.erase(nodes.end());
+        nodes.pop_back(); 
+        delete newnode;    
         return nullptr;
     }
     return regNode;
-
-
 }
 
 void TrafficNetwork::DeleteNode(TrafficNode* node) {
+    if (!node) return;
+    std::vector<TrafficNode*> connectionsCopy = node->connections;
     worldHandler->DeregisterTrafficNode(node);
 
-     nodes.erase(
+    for (auto conn : connectionsCopy) {
+        DeleteRoad(node, conn);
+    };
+
+    nodes.erase(
         std::remove(nodes.begin(), nodes.end(), node),
         nodes.end()
-    );   
+    );
+
+    delete node;   
+    
+}
+
+void TrafficNetwork::DeleteRoad(TrafficNode* node1, TrafficNode* node2) {
+    if (!node1 || !node2) {
+        return;
+    }
+    
+    if (node1 == node2) {
+        return;
+    }
+
+     auto it = std::find_if(roadSegments.begin(), roadSegments.end(),
+        [node1, node2](RoadSegment* segment) {
+            return (segment->start == node1 && segment->end == node2) ||
+                   (segment->start == node2 && segment->end == node1);
+        });
+    
+    if (it == roadSegments.end()) {
+        return;
+    }
+
+    RoadSegment* roadToDelete = *it;
+    roadSegments.erase(it);
+    
+    // Remove neighbor connections
+    node1->RemoveNeighbourNode(node2);
+    node2->RemoveNeighbourNode(node1); 
+    delete roadToDelete;
 }
 
 void TrafficNetwork::DebugNodesIterator() {
@@ -95,7 +131,7 @@ void RoadSegment::Render() {
 
     for (int i = 0; i < numSteps; i++)
     {
-        float t = (float)i / (numSteps - 1); 
+        float t = (numSteps > 1) ? (float)i / (numSteps - 1) : 0.0f;
         Vector3 currentPos = {
             startCoord.x + dx * t,
             startCoord.y,  // Keep Y constant
@@ -116,4 +152,11 @@ RoadSegment* TrafficNetwork::AddRoad(TrafficNode* node1, TrafficNode* node2) {
     rs->end = node2;
     roadSegments.push_back(rs);
     node1->SetNeighbourNode(node2);
+
+    return rs;
+}
+
+TrafficNetwork::~TrafficNetwork() {
+    for (auto segment : roadSegments) delete segment;
+    for (auto node : nodes) delete node;
 }

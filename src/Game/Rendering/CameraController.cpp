@@ -21,7 +21,7 @@ inline void CameraController::RecalculatePosition() {
 void CameraController::Initialize() {
     // float tiltRadians = tiltAngle * DEG2RAD;
     
-    camera = {0};
+    camera = {};
     camera.projection = CAMERA_PERSPECTIVE;
     camera.up = {0.0f, 1.0f, 0.0f}; //Y — UP - Second
 
