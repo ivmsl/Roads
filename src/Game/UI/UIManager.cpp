@@ -1,26 +1,16 @@
 #include "raylib.h"
 #include "raymath.h"
-#include "Game/Roads/RoadManager.hpp"
-#include "Game/Roads/RoadAlgorythms.hpp"
 #include "UIManager.hpp"
 #include <functional>
 #include "Game/Core/Helpers.hpp"
 
 
-UIManager::UIManager(RoadManager* rm, RoadBuilderService* rb) {
+UIManager::UIManager(RoadBuilderService* rb) {
 
     isSelecting = false;
-    Vector2 startGridPos = {-1, -1};
-    Vector2 currentGridPos = {-1, -1};
-    roadManager = rm;
+    startGridPos = {-1, -1};
+    currentGridPos = {-1, -1};
     roadBuilder = rb;
-    metadata = {0, RoadDirection::HORIZONTAL};
-
-    SetAlgorytm(RoadAlgorythms::AbsoluteLine);
-}
-
-void UIManager::SetAlgorytm(TraceAlgorytm alg) {
-    selectedAlgorytm = alg;
 }
 
 Vector2 UIManager::ScreenToWorld(Ray ray) {
@@ -32,15 +22,6 @@ Vector2 UIManager::ScreenToWorld(Ray ray) {
         0.0f,
         ray.position.z + t * ray.direction.z
     };
-
-    // Convert world coordinates to grid coordinates
-    // Each tile is 10x10 meters, so divide by 10 and floor
-    // int gridX = (int)floor(hitPoint.x / 10.0f);
-    // int gridY = (int)floor(hitPoint.z / 10.0f);
-    
-    // Clamp to grid bounds (0-99)
-    // float gridX = Clamp(hitPoint.x, 0, 99);
-    // float gridY = Clamp(hitPoint.z, 0, 99);
     
     return {(float)hitPoint.x, (float)hitPoint.z};
 
@@ -110,36 +91,11 @@ void UIManager::CompleteSelectionAction() {
         Vector3 startPos = {startGridPos.x, 0.0f, startGridPos.y};
         Vector3 endPos = {currentGridPos.x, 0.0f, currentGridPos.y};
 
-        // roadBuilder->InitBuild(startPos, endPos);
-
         if (!roadBuilder->CheckIfObstructedOnTheLine(startPos, endPos)) {
             roadBuilder->BuildRoad(startPos, endPos);
         } else {
             TraceLog(LOG_DEBUG, "Can not build! Error: path is abstructed");
         }
-    }
-
-
-    if (mode == UIMode::ROAD_BUILD) {
-
-        metadata.direction = DetermineRoadDirection();
-        if (metadata.direction == RoadDirection::HORIZONTAL || metadata.direction == RoadDirection::HORISONTAL_MIN) {
-            metadata.length = std::abs(startGridPos.x - currentGridPos.x);
-        } else {
-            metadata.length = std::abs(startGridPos.y - currentGridPos.y);
-        }
-
-        //  RoadDirection previewDirection = DetermineRoadDirection();
-         selectedAlgorytm(startGridPos, currentGridPos, metadata, [this](int x, int y, SelectionMetadata mtd) {
-                    roadManager->PlaceRoad(x, y, mtd); }
-                    );
-    }
-    if (mode == UIMode::ROAD_DELETE) {
-        // RoadDirection previewDirection = DetermineRoadDirection();
-        metadata.direction = DetermineRoadDirection();
-        selectedAlgorytm(startGridPos, currentGridPos, metadata, [this](int x, int y, SelectionMetadata mtd) {
-                    roadManager->DeleteRoad(x, y, mtd); }
-                    );
     }
 }
 
@@ -158,7 +114,7 @@ void UIManager::RenderSelection() {
     
     // Calculate total distance
     float totalDistance = std::sqrt(dx * dx + dz * dz);
-    metadata.direction = DetermineRoadDirection();
+
     int numSteps = (int)(totalDistance / 10); //byl +1 ale koniec potem dodalismy
 
      for (int i = 0; i < numSteps; i++) {
@@ -168,21 +124,11 @@ void UIManager::RenderSelection() {
         float x = startGridPos.x + dx * t;
         float y = startGridPos.y + dz * t;
 
-        RenderSelectionBrick(x, y, metadata);
+        RenderSelectionBrick(x, y);
      }
-    
-    
-    //metadata.length
-    // Determine preview direction
-    // RoadDirection previewDirection = DetermineRoadDirection();
-    
-    // Render preview path
-    // selectedAlgorytm(startGridPos, currentGridPos, metadata, [this](int x, int y, SelectionMetadata mtd) {
-    //                 RenderSelectionBrick(x, y, mtd); }
-    //                 );
 }
 
-void UIManager::RenderSelectionBrick(int x, int y, SelectionMetadata mtd) {
+void UIManager::RenderSelectionBrick(int x, int y) {
     // Convert grid to world coordinates
     // float worldX = x * 10.0f + 5.0f;  // Center of tile
     // float worldZ = y * 10.0f + 5.0f;
@@ -192,39 +138,16 @@ void UIManager::RenderSelectionBrick(int x, int y, SelectionMetadata mtd) {
     Vector3 size;
     Color color;
     
-    // Ghost/preview styling - semi-transparent
-    if (mtd.direction == RoadDirection::HORIZONTAL || mtd.direction == RoadDirection::HORISONTAL_MIN) {
-        size = {10.0f, 1.0f, 8.0f};
-        color = {255, 255, 255, 100}; 
-    } else {
-        size = {8.0f, 1.0f, 10.0f};
-        color = {255, 255, 255, 100};  
-    }
+    
+    size = {10.0f, 1.0f, 10.0f};
+    color = {255, 255, 255, 100}; 
     
     DrawCube(position, size.x, size.y, size.z, brickColor);
     DrawCubeWires(position, size.x, size.y, size.z, BLUE);
 }
 
-
-inline RoadDirection UIManager::DetermineRoadDirection() {
-    int deltaX = (int)currentGridPos.x - (int)startGridPos.x;
-    int deltaY = (int)currentGridPos.y - (int)startGridPos.y;
-    
-    if (abs(deltaX) >= abs(deltaY)) {
-        if (deltaX < 0) {
-            return RoadDirection::HORISONTAL_MIN;
-        } 
-        return RoadDirection::HORIZONTAL;
-    } else {
-        if (deltaY < 0) {
-            return RoadDirection::VERTICAL_MIN;
-        }
-        return RoadDirection::VERTICAL;
-    }
-}
-
 void UIManager::DrawTextInfo() {
-    int yOffset = 160;  // Start below your existing UI text
+    int yOffset = 160;  
     int lineHeight = 16;
     Color textColor = WHITE;
     Color labelColor = YELLOW;

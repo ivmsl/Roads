@@ -4,7 +4,6 @@
 #include "raylib.h"
 #include "Game/Rendering/CameraController.hpp"
 #include "Game/Rendering/GridRender.hpp"
-#include "Game/Roads/RoadManager.hpp"
 #include "Game/Roads/RoadBuilderService.hpp"
 #include "Game/UI/UIManager.hpp"
 #include "InputHandler.hpp"
@@ -18,7 +17,6 @@ class GameLoop {
         CameraController* camera;
         GridRenderer* grid;
         InputHandler* input;
-        RoadManager* roadManager;
         TrafficNetwork* trafficNetwork;
         UIManager* uiManager;
         World* worldHandler;

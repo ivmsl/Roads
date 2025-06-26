@@ -32,6 +32,7 @@ void TrafficNode::RenderDebug() const {
 }
 
 void TrafficNode::SetDebugVisible(bool visible) {
+    if (visible) {}
     return;
 }
 

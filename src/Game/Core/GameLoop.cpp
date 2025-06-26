@@ -18,14 +18,7 @@ void GameLoop::Initialize(int screenW, int screenH) {
     trafficNetwork = new TrafficNetwork(worldHandler);
     roadBuilder = new RoadBuilderService(worldHandler, trafficNetwork);
 
-    roadManager = new RoadManager();
-    uiManager = new UIManager(roadManager, roadBuilder);
-    
-    if (roadManager) {
-        TraceLog(LOG_DEBUG, "Road Manager inicialized!");
-        // roadManager->PlaceRoad(5, 10, RoadDirection::HORIZONTAL);
-        // roadManager->PlaceRoad(6, 10, RoadDirection::HORIZONTAL);
-    }
+    uiManager = new UIManager(roadBuilder);
 
     input = new InputHandler();
     input->Initialize(camera, grid, uiManager);
@@ -50,7 +43,6 @@ void GameLoop::Render() {
         DrawCube({100.0f, 2.5f, 100.0f}, 5.0f, 5.0f, 5.0f, BLUE);
 
         DrawLine3D({0, 0, 0}, {0, 20, 0}, PURPLE);  // Y-axis reference (up)
-        roadManager->Render();
         uiManager->RenderSelection();
         RenderDebugInfo();    
     EndMode3D();
@@ -129,5 +121,4 @@ void GameLoop::Cleanup() {
     delete input;
     delete camera;
     delete grid;
-    delete roadManager;
 }
