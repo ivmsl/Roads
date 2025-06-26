@@ -61,7 +61,7 @@ void GameLoop::RenderDebugInfo() {
     Color labelColor = YELLOW;
 
     Camera3D cam = camera->GetCamera();
-    trafficNetwork->DebugNodesIterator();
+    trafficNetwork->DebugNodesIterator(&cam);
 
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         Ray ray = GetScreenToWorldRay(GetMousePosition(), cam);

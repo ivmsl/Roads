@@ -111,14 +111,18 @@ void TrafficNetwork::DeleteRoad(TrafficNode* node1, TrafficNode* node2) {
     delete roadToDelete;
 }
 
-void TrafficNetwork::DebugNodesIterator() {
+void TrafficNetwork::DebugNodesIterator(Camera3D* camera) {
     for (TrafficNode* node : nodes)
     {
         node->RenderDebug();
     }
 
     for (RoadSegment* segment : roadSegments) {
-        segment->Render();
+        if (segment->ShouldRender(*camera)){ 
+            segment->Render();
+        } else {
+            TraceLog(LOG_DEBUG, "Gen stopped");
+        }
     }
     
 
@@ -176,5 +180,44 @@ void RoadSegment::GenerateMesh() {
     if (meshGenerated) return;
     roadMesh = RoadRenderer::GenerateRoadMesh(start->GetWorldPosition(), end->GetWorldPosition());
     meshGenerated = true;
+}
+
+bool RoadSegment::IsVisibleToCamera(Camera3D* camera) {
+    Vector3 startPos = start->GetWorldPosition();
+    Vector3 endPos = end->GetWorldPosition();
+    
+    // Simple bounding box check
+    Vector3 minBounds = {
+        fmin(startPos.x, endPos.x) - 5.0f,
+        -1.0f,
+        fmin(startPos.z, endPos.z) - 5.0f
+    };
+    Vector3 maxBounds = {
+        fmax(startPos.x, endPos.x) + 5.0f,
+        1.0f,
+        fmax(startPos.z, endPos.z) + 5.0f
+    };
+    
+    BoundingBox roadBounds = {minBounds, maxBounds};
+    
+    // Check if bounding box is in camera frustum
+    return GetCameraMatrix(*camera).m15 > 0; // Simplified check
+}
+
+bool RoadSegment::ShouldRender(Camera3D camera, float maxDistance) {
+    Vector3 startPos = start->GetWorldPosition();
+    Vector3 endPos = end->GetWorldPosition();
+    Vector3 roadCenter = {
+        (startPos.x + endPos.x) / 2.0f,
+        (startPos.y + endPos.y) / 2.0f,
+        (startPos.z + endPos.z) / 2.0f
+    };
+    
+    float distanceToCamera = Vector3Distance(camera.position, roadCenter);
+    return distanceToCamera <= maxDistance;
+}
+
+RoadSegment::~RoadSegment() {
+    if (meshGenerated) UnloadMesh(roadMesh);
 }
 

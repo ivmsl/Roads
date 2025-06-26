@@ -48,6 +48,9 @@ class RoadSegment {
 
         void Render();
         void GenerateMesh();
+        bool IsVisibleToCamera(Camera3D* camera);
+        bool ShouldRender(Camera3D camera, float maxDistance = 500.0f);
+        ~RoadSegment();
 };
 
 class TrafficNetwork {
@@ -66,7 +69,7 @@ class TrafficNetwork {
         std::vector<TrafficNode*> FindPath(TrafficNode* start, TrafficNode* end);
         TrafficNode* CreateNode(Vector3 position);
         void DeleteNode(TrafficNode* node);
-        void DebugNodesIterator();
+        void DebugNodesIterator(Camera3D* camera);
 
         RoadSegment* AddRoad(TrafficNode* node1, TrafficNode* node2);
         void DeleteRoad(TrafficNode* node1, TrafficNode* node2);
