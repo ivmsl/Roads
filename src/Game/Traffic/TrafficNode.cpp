@@ -40,8 +40,13 @@ bool TrafficNode::IsDebugVisible() const {
     return true;
 }
 
+//********************************************************
+//*                    Traffic Network 
+//********************************************************
+
 TrafficNetwork::TrafficNetwork(World* wrd) {
     worldHandler = wrd;
+    dirtRoadRenderer = new DirtRoad();
 }
 
 TrafficNode* TrafficNetwork::CreateNode(Vector3 position) {
@@ -119,30 +124,39 @@ void TrafficNetwork::DebugNodesIterator() {
 
 }
 
+TrafficNetwork::~TrafficNetwork() {
+    for (auto segment : roadSegments) delete segment;
+    for (auto node : nodes) delete node;
+}
+
+//********************************************************
+//*                    Road segment 
+//********************************************************
+
 void RoadSegment::Render() {
     Vector3 startCoord =start->GetWorldPosition();
     Vector3 endCoord = end->GetWorldPosition();
     DrawLine3D(startCoord, endCoord, RED);
-    float dx = endCoord.x - startCoord.x;
-    float dz = endCoord.z - startCoord.z;
-    
-    // Calculate total distance
-    float totalDistance = std::sqrt(dx * dx + dz * dz);
-    int numSteps = (int)(totalDistance / 10);
+    // float dx = endCoord.x - startCoord.x;
+    // float dz = endCoord.z - startCoord.z;
+    DrawMesh(roadMesh, *roadMaterial, MatrixIdentity());
+    // // Calculate total distance
+    // float totalDistance = std::sqrt(dx * dx + dz * dz);
+    // int numSteps = (int)(totalDistance / 10);
 
-    for (int i = 0; i < numSteps; i++)
-    {
-        float t = (numSteps > 1) ? (float)i / (numSteps - 1) : 0.0f;
-        Vector3 currentPos = {
-            startCoord.x + dx * t,
-            startCoord.y,  // Keep Y constant
-            startCoord.z + dz * t
-        };
+    // for (int i = 0; i < numSteps; i++)
+    // {
+    //     float t = (numSteps > 1) ? (float)i / (numSteps - 1) : 0.0f;
+    //     Vector3 currentPos = {
+    //         startCoord.x + dx * t,
+    //         startCoord.y,  // Keep Y constant
+    //         startCoord.z + dz * t
+    //     };
 
-        DrawCube(currentPos, 3.0f, 3.0f, 3.0f, YELLOW);
+    //     DrawCube(currentPos, 3.0f, 3.0f, 3.0f, YELLOW);
 
 
-    }
+    // }
     
 
 }
@@ -151,13 +165,16 @@ RoadSegment* TrafficNetwork::AddRoad(TrafficNode* node1, TrafficNode* node2) {
     RoadSegment* rs = new RoadSegment();
     rs->start = node1;
     rs->end = node2;
+    rs->GenerateMesh();
+    rs->roadMaterial = dirtRoadRenderer->GetRoadMaterial();
     roadSegments.push_back(rs);
     node1->SetNeighbourNode(node2);
-
     return rs;
 }
 
-TrafficNetwork::~TrafficNetwork() {
-    for (auto segment : roadSegments) delete segment;
-    for (auto node : nodes) delete node;
+void RoadSegment::GenerateMesh() {
+    if (meshGenerated) return;
+    roadMesh = RoadRenderer::GenerateRoadMesh(start->GetWorldPosition(), end->GetWorldPosition());
+    meshGenerated = true;
 }
+

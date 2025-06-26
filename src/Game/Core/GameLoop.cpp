@@ -36,13 +36,15 @@ void GameLoop::Render() {
         // Draw your 3D world here (grid, roads, etc.)
         // grid->Render();
 
-        DrawCube({0, 0, 0}, 2, 2, 2, RED);  // Test cube at origin
-        DrawCube({50.0f, 0.0f, 50.0f}, 10.0f, 10.0f, 10.0f, RED);
-        DrawCubeWires({50.0f, 0.0f, 50.0f}, 10.0f, 10.0f, 10.0f, WHITE);
-        DrawCube({0.0f, 2.5f, 0.0f}, 5.0f, 5.0f, 5.0f, GREEN);
-        DrawCube({100.0f, 2.5f, 100.0f}, 5.0f, 5.0f, 5.0f, BLUE);
+        DrawCube({0, 0, 0}, 1, 1, 1, RED);  // Test cube at origin
+        // DrawCube({50.0f, 0.0f, 50.0f}, 10.0f, 10.0f, 10.0f, RED);
+        // DrawCubeWires({50.0f, 0.0f, 50.0f}, 10.0f, 10.0f, 10.0f, WHITE);
+        // DrawCube({0.0f, 2.5f, 0.0f}, 5.0f, 5.0f, 5.0f, GREEN);
+        // DrawCube({100.0f, 2.5f, 100.0f}, 5.0f, 5.0f, 5.0f, BLUE);
 
-        DrawLine3D({0, 0, 0}, {0, 20, 0}, PURPLE);  // Y-axis reference (up)
+        DrawLine3D({0, 0, 0}, {0, 20, 0}, GREEN);  // Y-axis reference (up)
+        DrawLine3D({0, 0, 0}, {30, 0, 0}, RED);  // X-axis reference (up)
+        DrawLine3D({0, 0, 0}, {0, 0, 30}, BLUE);  // X-axis reference (up)
         uiManager->RenderSelection();
         RenderDebugInfo();    
     EndMode3D();

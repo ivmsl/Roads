@@ -4,6 +4,7 @@
 #include <vector>
 #include "raylib.h"
 #include "Game/Debug/DebugRenderer.hpp"
+#include "Game/Rendering/RoadRenderer.hpp" // TEMP
 #include "Game/World/World.hpp"
 #include "Game/Core/Helpers.hpp"
 #include <memory>
@@ -41,7 +42,12 @@ class RoadSegment {
         const TrafficNode* start;
         const TrafficNode* end;
 
+        Material* roadMaterial;
+        Mesh roadMesh;        // NEW: Store the actual road geometry
+        bool meshGenerated = false;  // NEW: Track if mesh is built
+
         void Render();
+        void GenerateMesh();
 };
 
 class TrafficNetwork {
@@ -50,6 +56,8 @@ class TrafficNetwork {
         // std::vector<std::unique_ptr<TrafficNode>> nodes;
         std::vector<TrafficNode*> nodes;
         std::vector<RoadSegment*> roadSegments;
+
+        DirtRoad* dirtRoadRenderer;
     
     // void GenerateFromRoadManager(RoadManager* roadManager);  // Convert tiles to nodes
     public: 

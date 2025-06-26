@@ -1,6 +1,7 @@
 #pragma once
 
 #include "raylib.h"
+#include <filesystem>
 #include <functional>
 
 namespace std {
@@ -18,3 +19,8 @@ namespace std {
 
 #define TRACE_COORD(X) TraceLog(LOG_DEBUG, "At x: %f y: %f z: %f", X.x, X.y, X.z)
 // #define TRACE_COORD(X) TraceLog(LOG_DEBUG, "At x: %f y: %f", X.x, X.y)
+
+
+// std::string GetExecutableDirectory() {
+
+// }
