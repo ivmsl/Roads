@@ -108,6 +108,7 @@ void TrafficNetwork::DeleteRoad(TrafficNode* node1, TrafficNode* node2) {
     // Remove neighbor connections
     node1->RemoveNeighbourNode(node2);
     node2->RemoveNeighbourNode(node1); 
+    worldHandler->DeregisterRoad(roadToDelete);
     delete roadToDelete;
 }
 
@@ -173,6 +174,7 @@ RoadSegment* TrafficNetwork::AddRoad(TrafficNode* node1, TrafficNode* node2) {
     rs->roadMaterial = dirtRoadRenderer->GetRoadMaterial();
     roadSegments.push_back(rs);
     node1->SetNeighbourNode(node2);
+    worldHandler->RegisterRoad(rs);
     return rs;
 }
 

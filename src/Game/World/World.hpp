@@ -32,6 +32,10 @@ class World {
         RoadSegment* RegisterRoad(RoadSegment* road);
         RoadSegment* DeregisterRoad(RoadSegment* road);
 
-};
+        RoadSegment* FindNearestRoad(Vector3 worldPosition, float maxRadius = 8.0f);
+
+        std::vector<Vector3> GetChunksCrossedBySegment(Vector3 start, Vector3 end);
+
+};      
 
 #endif

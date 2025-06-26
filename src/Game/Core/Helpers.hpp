@@ -1,4 +1,5 @@
-#pragma once
+#ifndef HELPERS_GEN_HPP
+#define HELPERS_GEN_HPP
 
 #include "raylib.h"
 #include <filesystem>
@@ -24,3 +25,9 @@ namespace std {
 // std::string GetExecutableDirectory() {
 
 // }
+namespace Helpers {
+    float DistancePointToLineSegment(Vector3 point, Vector3 lineStart, Vector3 lineEnd);
+}
+
+
+#endif

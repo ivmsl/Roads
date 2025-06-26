@@ -1,6 +1,7 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "World.hpp"
+#include "Game/Core/Helpers.hpp"
 #include <limits>
 
 BoundingBox World::GetChunkBorders(Vector3 chunk) {
@@ -84,4 +85,107 @@ TrafficNode* World::DeregisterTrafficNode(TrafficNode* node) {
     }
     
     return node;
+}
+
+std::vector<Vector3> World::GetChunksCrossedBySegment(Vector3 start, Vector3 end) {
+    std::vector<Vector3> chunks;
+    
+    Vector3 startChunk = GetChunkForPosition(start);
+    Vector3 endChunk = GetChunkForPosition(end);
+    
+    // If both points are in the same chunk, just return that chunk
+    if (Vector3Equals(startChunk, endChunk)) {
+        chunks.push_back(startChunk);
+        return chunks;
+    }
+    
+    // Calculate the distance and number of steps to sample along the line
+    float distance = Vector3Distance(start, end);
+    // Sample every quarter chunk size to ensure we don't miss any chunks
+    int numSteps = (int)(distance / (chunkSize * 0.25f)) + 1;
+    
+    Vector3 lastChunk = {-999999, -999999, -999999}; // Invalid chunk coordinates
+    
+    for (int i = 0; i <= numSteps; i++) {
+        float t = (numSteps > 0) ? (float)i / numSteps : 0.0f;
+        Vector3 currentPos = Vector3Lerp(start, end, t);
+        Vector3 chunk = GetChunkForPosition(currentPos);
+        
+        // Only add if it's different from the last chunk (avoid duplicates)
+        if (!Vector3Equals(chunk, lastChunk)) {
+            chunks.push_back(chunk);
+            lastChunk = chunk;
+        }
+    }
+    
+    return chunks;
+}
+
+RoadSegment* World::FindNearestRoad(Vector3 worldPosition, float radius) {
+    // std::vector<RoadSegment*> nearbyRoads;
+    RoadSegment* nearestRoad = nullptr;
+    Vector3 currChunk = GetChunkForPosition(worldPosition);
+    auto it = roads.find(currChunk);
+    if (it == roads.end() || it->second.empty()) {
+        return nullptr;
+    }
+            
+    for (RoadSegment* road : it->second) {
+                    // Check if the road segment is actually within radius
+        float distToRoad = Helpers::DistancePointToLineSegment(worldPosition, 
+                            road->start->GetWorldPosition(), 
+                            road->end->GetWorldPosition());
+                        
+        if (distToRoad <= radius) {
+            nearestRoad = road;
+        }
+
+    }
+
+    return nearestRoad;
+}
+
+RoadSegment* World::RegisterRoad(RoadSegment* road) {
+    if (!road) return nullptr;
+    
+    // Get all chunks this road segment passes through
+    std::vector<Vector3> chunksAffected = GetChunksCrossedBySegment(
+        road->start->GetWorldPosition(), 
+        road->end->GetWorldPosition()
+    );
+    
+    // Register road in all affected chunks
+    for (Vector3 chunk : chunksAffected) {
+        roads[chunk].push_back(road);
+    }
+    
+    TraceLog(LOG_DEBUG, "Road registered across %d chunks", (int)chunksAffected.size());
+    
+    return road;
+}
+
+RoadSegment* World::DeregisterRoad(RoadSegment* road) {
+    if (!road) return nullptr;
+    
+    // Get all chunks this road was registered in
+    std::vector<Vector3> chunksAffected = GetChunksCrossedBySegment(
+        road->start->GetWorldPosition(), 
+        road->end->GetWorldPosition()
+    );
+    
+    // Remove road from all affected chunks
+    for (Vector3 chunk : chunksAffected) {
+        auto& chunkRoads = roads[chunk];
+        auto it = std::find(chunkRoads.begin(), chunkRoads.end(), road);
+        if (it != chunkRoads.end()) {
+            chunkRoads.erase(it);
+        }
+        
+        // Clean up empty chunk entries
+        if (chunkRoads.empty()) {
+            roads.erase(chunk);
+        }
+    }
+    
+    return road;
 }

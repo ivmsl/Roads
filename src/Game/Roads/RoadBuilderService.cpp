@@ -176,7 +176,7 @@ bool RoadBuilderService::CheckIfObstructedOnTheLine(Vector3 startPos, Vector3 en
         };
         
         // Vector3 currChunk = world->GetChunkForPosition(currentPos);
-        if (world->FindNearestNode(currentPos)) {
+        if (world->FindNearestNode(currentPos) || world->FindNearestRoad(currentPos)) {
             TraceLog(LOG_DEBUG, "Found obstruction in the middle at step %d: %f %f %f", 
                     i, currentPos.x, currentPos.y, currentPos.z);
             return true;
@@ -190,6 +190,10 @@ bool RoadBuilderService::CheckIfObstructedOnTheLine(Vector3 startPos, Vector3 en
 RoadBuilderService::NodeHeadTailInfo RoadBuilderService::CheckNodesStartFinish(Vector3 startPos, Vector3 endPos) {
      NodeHeadTailInfo conn = NO_CONNECTION;
      
+    if (world->FindNearestRoad(startPos) || world->FindNearestRoad(endPos)) {
+        conn = (NodeHeadTailInfo)6;
+    }
+
     //  Vector3 currChunk = world->GetChunkForPosition(startPos);
      if (world->FindNearestNode(startPos)) {
         conn = (NodeHeadTailInfo)1;

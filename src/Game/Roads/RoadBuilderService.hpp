@@ -18,7 +18,8 @@ class RoadBuilderService {
             NO_CONNECTION = 0,
             NODE_START = 1,
             NODE_END = 2,
-            NODE_STARTEND = 3
+            NODE_STARTEND = 3,
+            OBSTRUCTED = 6
         };
         RoadBuilderService(World* w, TrafficNetwork* nM);
         // void Reset();

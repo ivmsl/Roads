@@ -48,6 +48,7 @@ void UIManager::UpdateSelection(Vector2 gridPos) {
        
         if (roadBuilder->CheckIfObstructedOnTheLine(startPos, endPos)) {
             brickColor = RED;
+            return;
         }
 
         RoadBuilderService::NodeHeadTailInfo conn = roadBuilder->CheckNodesStartFinish(startPos, endPos);
@@ -63,6 +64,10 @@ void UIManager::UpdateSelection(Vector2 gridPos) {
         }
         case RoadBuilderService::NodeHeadTailInfo::NODE_STARTEND:  {
             brickColor = MAGENTA;
+            break;
+        }
+        case RoadBuilderService::OBSTRUCTED: {
+            brickColor = RED;
             break;
         }
         default:
