@@ -61,20 +61,17 @@ void InputHandler::HandleRoadPlacement() {
     
     }
 
-    if (IsKeyDown(KEY_B)) {
-        uiManager->ModeSelect(UIMode::ROAD_BUILD);
+    if (IsKeyPressed(KEY_N)) {
+        uiManager->ModeSelect(UIManager::MAKE_NODES);
     }
 
-    if (IsKeyDown(KEY_X)) {
-        uiManager->ModeSelect(UIMode::ROAD_DELETE);
+    if (IsKeyPressed(KEY_ENTER)) {
+        uiManager->ModeSelect(UIManager::IDLE);
     }
 
-    if (IsKeyDown(KEY_N)) {
-        uiManager->ModeSelect(UIMode::MAKE_NODES);
-    }
-
-    if (IsKeyDown(KEY_ENTER)) {
-        uiManager->ModeSelect(UIMode::IDLE);
+    if (IsKeyPressed(KEY_C)) {
+        TraceLog(LOG_DEBUG, "Toggled snap");
+        uiManager->ToggleSnap();
     }
     
     Vector2 mousePos = GetMousePosition();

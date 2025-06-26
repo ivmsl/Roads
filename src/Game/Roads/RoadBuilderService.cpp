@@ -88,73 +88,6 @@ void RoadBuilderService::BuildRoad(Vector3 startPos, Vector3 endPos) {
 }
 
 
-TrafficNode* RoadBuilderService::CheckIfObstructed(Vector3 startPos, Vector3 endPos) {
-
-    // int dx = std::abs(startPos.x - endPos.x) / segmentSpacing;
-    // int dz = std::abs(startPos.z - endPos.z) / segmentSpacing;
-    Vector3 currentPos = startPos;
-    // Vector3 currChunk;
-
-    float dx = endPos.x - startPos.x;
-    float dz = endPos.z - startPos.z;
-    
-    // Calculate total distance
-    float totalDistance = std::sqrt(dx * dx + dz * dz);
-    int numSteps = (int)(totalDistance / segmentSpacing) + 1;
-
-        for (int i = 0; i < numSteps; i++) {
-        float t = (numSteps > 1) ? (float)i / (numSteps - 1) : 0.0f;  // t goes from 0 to 1
-        
-        Vector3 currentPos = {
-            startPos.x + dx * t,
-            startPos.y,  // Keep Y constant
-            startPos.z + dz * t
-        };
-        
-        // Vector3 currChunk = world->GetChunkForPosition(currentPos);
-        if (TrafficNode* node = world->FindNearestNode(currentPos)) {
-            TraceLog(LOG_DEBUG, "Found obstruction at step %d: %f %f %f", 
-                     i, currentPos.x, currentPos.y, currentPos.z);
-            return node;
-        }
-        }
-
-
-    // if (startPos.x - endPos.x > 0) dx = -dx;
-    // if (startPos.z - endPos.z > 0) dz = -dz;
-
-    // TraceLog(LOG_DEBUG, "Checking for obstruction... Len: %f", length);
-
-    // for (size_t i = 0; i < length; i++)
-    // {   
-    //     currChunk = world->GetChunkForPosition(currentPos);
-    //     // TRACE_COORD(currentPos);
-    //     if (TrafficNode* node = world->FindNearestNode(currChunk, currentPos)) {
-    //         // TraceLog(LOG_DEBUG, "Found an obstruction at: %f %f %f", currentPos.x, currentPos.y, currentPos.z);
-    //         return node;
-            
-    //     }
-
-    //     currentPos.x += dx;
-    //     currentPos.z += dz;
-    // }
-
-    TraceLog(LOG_DEBUG, "\n\nChecking endPos vs currPos");
-    TRACE_COORD(currentPos);
-    TraceLog(LOG_DEBUG, "END POS: ");
-    TRACE_COORD(endPos);
-
-    //Dodatkowe sprawdzanie dla konca 
-    //currChunk = world->GetChunkForPosition(endPos);
-    // if (TrafficNode* node = world->FindNearestNode(currChunk, endPos)) {
-    //         return node;
-    //     }
-
-    return nullptr;
-    
-}
-
-
 bool RoadBuilderService::CheckIfObstructedOnTheLine(Vector3 startPos, Vector3 endPos) {
     Vector3 currentPos = startPos;
     // Vector3 currChunk;
@@ -188,7 +121,13 @@ bool RoadBuilderService::CheckIfObstructedOnTheLine(Vector3 startPos, Vector3 en
 }
 
 RoadBuilderService::NodeHeadTailInfo RoadBuilderService::CheckNodesStartFinish(Vector3 startPos, Vector3 endPos) {
-     NodeHeadTailInfo conn = NO_CONNECTION;
+     
+    NodeHeadTailInfo conn = NO_CONNECTION;
+
+    if (CheckIfObstructedOnTheLine(startPos, endPos)) {
+        conn = (NodeHeadTailInfo)6;
+        return conn;
+    }
      
     if (world->FindNearestRoad(startPos) || world->FindNearestRoad(endPos)) {
         conn = (NodeHeadTailInfo)6;

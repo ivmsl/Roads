@@ -41,16 +41,30 @@ void UIManager::UpdateSelection(Vector2 gridPos) {
     if (!isSelecting) return;   
     currentGridPos = gridPos;
 
+
+    Vector2 originalEndPos = currentGridPos;
     // TraceLog(LOG_DEBUG, "\n\nUI Manager: tracing osbtruction;");
-        Vector3 startPos = {startGridPos.x, 0.0f, startGridPos.y};
-        Vector3 endPos = {currentGridPos.x, 0.0f, currentGridPos.y};
 
-       
-        if (roadBuilder->CheckIfObstructedOnTheLine(startPos, endPos)) {
-            brickColor = RED;
-            return;
-        }
 
+    if (snap) {
+        Vector3 originalEndPos = {currentGridPos.x, 0.0f, currentGridPos.y};
+        float dx = std::abs(startGridPos.x - currentGridPos.x);
+        float dy = std::abs(startGridPos.y - currentGridPos.y);
+
+        if (dx > dy && dy != dx) {
+            currentGridPos.y = startGridPos.y;
+        } else if (dy > dx && dy != dx) {
+            currentGridPos.x = startGridPos.x;
+        } 
+
+        RoadBuilderService::NodeHeadTailInfo conn = roadBuilder->CheckNodesStartFinish(originalEndPos, originalEndPos);
+        if (conn > 1 && conn < 4) currentGridPos = {originalEndPos.x, originalEndPos.z};
+    }
+
+    Vector3 startPos = {startGridPos.x, 0.0f, startGridPos.y};
+    Vector3 endPos = {currentGridPos.x, 0.0f, currentGridPos.y};
+
+    if (mode == MAKE_NODES) {
         RoadBuilderService::NodeHeadTailInfo conn = roadBuilder->CheckNodesStartFinish(startPos, endPos);
         switch (conn)
         {
@@ -74,6 +88,9 @@ void UIManager::UpdateSelection(Vector2 gridPos) {
             brickColor = BLUE;
             break;
         }
+    }
+
+        
 }
 
 void UIManager::EndSelection() {
@@ -91,12 +108,11 @@ void UIManager::CompleteSelectionAction() {
 
     if (mode == UIMode::MAKE_NODES) {
         
-
-        TraceLog(LOG_DEBUG, "Node making process initialised");
         Vector3 startPos = {startGridPos.x, 0.0f, startGridPos.y};
         Vector3 endPos = {currentGridPos.x, 0.0f, currentGridPos.y};
+        RoadBuilderService::NodeHeadTailInfo conn = roadBuilder->CheckNodesStartFinish(startPos, endPos);
 
-        if (!roadBuilder->CheckIfObstructedOnTheLine(startPos, endPos)) {
+        if (!(conn == RoadBuilderService::OBSTRUCTED)) {
             roadBuilder->BuildRoad(startPos, endPos);
         } else {
             TraceLog(LOG_DEBUG, "Can not build! Error: path is abstructed");
@@ -188,4 +204,8 @@ void UIManager::DrawTextInfo() {
 
 void UIManager::ModeSelect(UIMode newMode) {
     mode = newMode;
+}
+
+void UIManager::ToggleSnap() {
+    snap = !snap;
 }

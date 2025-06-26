@@ -1,15 +1,5 @@
 #ifndef HELPERS_UI_
 #define HELPERS_UI_
 
-enum class UIMode {
-    IDLE,
-    ROAD_BUILD,
-    MAKE_NODES,
-    CHECK_OBST,
-    ROAD_DELETE,
-    ROAD_UPDATE,
-    DELETE,
-    INFO_SELECT
-};
 
 #endif
