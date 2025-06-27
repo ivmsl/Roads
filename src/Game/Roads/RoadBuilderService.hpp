@@ -28,5 +28,6 @@ class RoadBuilderService {
         TrafficNode* CheckIfObstructed(Vector3 startPos, Vector3 endPos);
         bool CheckIfObstructedOnTheLine(Vector3 startPos, Vector3 endPos);
         NodeHeadTailInfo CheckNodesStartFinish(Vector3 startPos, Vector3 endPos);
+        void HandleDeletionAtPlace(Vector3 position) const;
 };
 

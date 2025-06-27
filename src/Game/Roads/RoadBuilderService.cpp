@@ -142,3 +142,12 @@ RoadBuilderService::NodeHeadTailInfo RoadBuilderService::CheckNodesStartFinish(V
 
      return conn;
 }
+
+void RoadBuilderService::HandleDeletionAtPlace(Vector3 position) const {
+    if (TrafficNode* node = world->FindNearestNode(position)) {
+        networkManager->DeleteNode(node);
+    }
+    else if (RoadSegment* road = world->FindNearestRoad(position)) {
+        networkManager->DeleteRoad(road);
+    }
+}

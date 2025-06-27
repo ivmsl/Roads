@@ -47,8 +47,8 @@ class TrafficNode : IDebuggable {
 
 class RoadSegment {
     public: 
-        const TrafficNode* start;
-        const TrafficNode* end;
+        TrafficNode* start;
+        TrafficNode* end;
 
         Material* roadMaterial;
         Mesh roadMesh;        // NEW: Store the actual road geometry
@@ -82,6 +82,7 @@ class TrafficNetwork {
 
         RoadSegment* AddRoad(TrafficNode* node1, TrafficNode* node2);
         void DeleteRoad(TrafficNode* node1, TrafficNode* node2);
+        void DeleteRoad(RoadSegment* road);
 
 
         bool ShouldRender(Vector3 startPos, Vector3 endPos, Camera3D camera, float maxDistance = 500.0f);

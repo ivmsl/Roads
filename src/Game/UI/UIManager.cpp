@@ -38,9 +38,21 @@ void UIManager::StartSelection(Vector2 gridPos) {
 }
 
 void UIManager::UpdateSelection(Vector2 gridPos) {
-    if (!isSelecting) return;   
-    currentGridPos = gridPos;
+    if (!isSelecting) return;
 
+    switch (mode)
+    {
+    case ROAD_DELETE: {
+       startGridPos = gridPos;
+       currentGridPos = gridPos;
+       return;   
+    break;
+    }
+    default:
+
+        break;
+    }
+    currentGridPos = gridPos;
 
     // TraceLog(LOG_DEBUG, "\n\nUI Manager: tracing osbtruction;");
 
@@ -104,6 +116,13 @@ void UIManager::CompleteSelectionAction() {
     if (mode == UIMode::IDLE) {
         
     }
+    
+    if (mode == ROAD_DELETE) {
+        
+        Vector3 position = {currentGridPos.x, 0.0f, currentGridPos.y};
+        roadBuilder->HandleDeletionAtPlace(position);
+        return;
+    }
 
     if (mode == UIMode::MAKE_NODES) {
         
@@ -117,6 +136,11 @@ void UIManager::CompleteSelectionAction() {
         } else {
             TraceLog(LOG_DEBUG, "Can not build! Error: path is abstructed");
         }
+    }
+
+    if (mode == ROAD_DELETE) {
+        Vector3 startPos = {startGridPos.x, 0.0f, startGridPos.y};
+        Vector3 endPos = {currentGridPos.x, 0.0f, currentGridPos.y};
     }
 }
 
@@ -132,6 +156,7 @@ void UIManager::RenderSelection() {
 
     float dx = currentGridPos.x - startGridPos.x;
     float dz = currentGridPos.y - startGridPos.y;
+    if (mode == ROAD_DELETE) { RenderSelectionBrick(currentGridPos.x, currentGridPos.y); return; };
     
     // Calculate total distance
     float totalDistance = std::sqrt(dx * dx + dz * dz);

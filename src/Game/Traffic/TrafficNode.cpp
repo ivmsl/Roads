@@ -164,6 +164,20 @@ void TrafficNetwork::DeleteRoad(TrafficNode* node1, TrafficNode* node2) {
     delete roadToDelete;
 }
 
+void TrafficNetwork::DeleteRoad(RoadSegment* road) {
+    
+    roadSegments.erase(
+        std::remove(roadSegments.begin(), roadSegments.end(), road),
+        roadSegments.end()
+    );
+
+    road->start->RemoveNeighbourNode(road->end);
+    road->end->RemoveNeighbourNode(road->start);
+
+    worldHandler->DeregisterRoad(road);
+    delete road;
+}
+
 void TrafficNetwork::DebugNodesIterator(Camera3D* camera) {
     for (TrafficNode* node : nodes) { 
         if (ShouldRender(node->GetWorldPosition(), node->GetWorldPosition(), *camera)) {
