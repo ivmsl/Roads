@@ -42,7 +42,6 @@ void UIManager::UpdateSelection(Vector2 gridPos) {
     currentGridPos = gridPos;
 
 
-    Vector2 originalEndPos = currentGridPos;
     // TraceLog(LOG_DEBUG, "\n\nUI Manager: tracing osbtruction;");
 
 
@@ -113,6 +112,7 @@ void UIManager::CompleteSelectionAction() {
         RoadBuilderService::NodeHeadTailInfo conn = roadBuilder->CheckNodesStartFinish(startPos, endPos);
 
         if (!(conn == RoadBuilderService::OBSTRUCTED)) {
+            TraceLog(LOG_DEBUG, "Start building road, conn status %i", conn);
             roadBuilder->BuildRoad(startPos, endPos);
         } else {
             TraceLog(LOG_DEBUG, "Can not build! Error: path is abstructed");

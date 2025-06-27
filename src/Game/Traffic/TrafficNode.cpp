@@ -19,10 +19,9 @@ void TrafficNode::RemoveNeighbourNode(TrafficNode* node) {
     );
 }
 
-
 void TrafficNode::RenderDebug() const {
     
-    Vector3 size = {8.0f, 0.3f, 8.0f};
+    Vector3 size = {4.0f, 0.3f, 4.0f};
     Color color = BLUE;
 
     DrawCube(worldPosition, size.x, size.y, size.z, color);
@@ -40,6 +39,35 @@ bool TrafficNode::IsDebugVisible() const {
     return true;
 }
 
+void TrafficNode::GenerateMesh() {
+    // TRACE_LOG("Fired mesh generation");
+    TraceLog(LOG_DEBUG, "Fired mesh gen. Connections size: %i, mesh gen %i", connections.size(), meshGenerated);
+    if (meshGenerated) {
+        if (intMesh.vaoId == 0) {
+            intMesh = IntersectionRenderer::GenerateIntersectionMesh(worldPosition, connections);        
+        }
+        else {
+            UnloadMesh(intMesh);
+            intMesh = IntersectionRenderer::GenerateIntersectionMesh(worldPosition, connections);        
+            TraceLog(LOG_DEBUG, "New mesh ID: %i", intMesh.vaoId);
+        }
+        return;
+    }
+
+    intMesh = IntersectionRenderer::GenerateIntersectionMesh(worldPosition, connections);
+    meshGenerated = true;
+}
+
+void TrafficNode::Render() const {
+    if (meshGenerated) {
+        DrawMesh(intMesh, *roadMaterial, MatrixIdentity());
+    }
+}
+
+TrafficNode::~TrafficNode() {
+    if (meshGenerated) UnloadMesh(intMesh);
+}
+
 //********************************************************
 //*                    Traffic Network 
 //********************************************************
@@ -47,6 +75,8 @@ bool TrafficNode::IsDebugVisible() const {
 TrafficNetwork::TrafficNetwork(World* wrd) {
     worldHandler = wrd;
     dirtRoadRenderer = new DirtRoad();
+    dirtIntersectionRenderer = new DirtIntersection();
+
 }
 
 TrafficNode* TrafficNetwork::CreateNode(Vector3 position) {
@@ -54,14 +84,17 @@ TrafficNode* TrafficNetwork::CreateNode(Vector3 position) {
     nodes.push_back(newnode);
     TrafficNode* regNode = worldHandler->RegisterTrafficNode(newnode);
     
-    TraceLog(LOG_DEBUG, "Node created ");
-    TRACE_COORD(position);
+    
+    // TRACE_COORD(position);
+    TraceLog(LOG_DEBUG, "Created node at %.2f %.2f %.2f", position.x, position.y, position.z);
 
     if (!regNode) {
         nodes.pop_back(); 
         delete newnode;    
         return nullptr;
     }
+    newnode->roadMaterial = dirtIntersectionRenderer->GetRoadMaterial();
+    newnode->GenerateMesh();
     return regNode;
 }
 
@@ -82,6 +115,25 @@ void TrafficNetwork::DeleteNode(TrafficNode* node) {
     delete node;   
     
 }
+
+const std::vector<TrafficNode*>& TrafficNetwork::GetConnections(TrafficNode* node) {
+    return node->connections;
+}
+
+RoadSegment* TrafficNetwork::AddRoad(TrafficNode* node1, TrafficNode* node2) {
+    RoadSegment* rs = new RoadSegment();
+    rs->start = node1;
+    rs->end = node2;
+    rs->GenerateMesh();
+    rs->roadMaterial = dirtRoadRenderer->GetRoadMaterial();
+    roadSegments.push_back(rs);
+    node1->SetNeighbourNode(node2);
+    worldHandler->RegisterRoad(rs);
+    node1->GenerateMesh();
+    node2->GenerateMesh();
+    return rs;
+}
+
 
 void TrafficNetwork::DeleteRoad(TrafficNode* node1, TrafficNode* node2) {
     if (!node1 || !node2) {
@@ -113,20 +165,31 @@ void TrafficNetwork::DeleteRoad(TrafficNode* node1, TrafficNode* node2) {
 }
 
 void TrafficNetwork::DebugNodesIterator(Camera3D* camera) {
-    for (TrafficNode* node : nodes)
-    {
-        node->RenderDebug();
+    for (TrafficNode* node : nodes) { 
+        if (ShouldRender(node->GetWorldPosition(), node->GetWorldPosition(), *camera)) {
+            node->Render();
+        }
+        
     }
 
     for (RoadSegment* segment : roadSegments) {
-        if (segment->ShouldRender(*camera)){ 
+        if (ShouldRender(segment->start->GetWorldPosition(), segment->end->GetWorldPosition(), *camera)){ 
             segment->Render();
         } else {
             TraceLog(LOG_DEBUG, "Gen stopped");
         }
     }
-    
+}
 
+bool TrafficNetwork::ShouldRender(Vector3 startPos, Vector3 endPos, Camera3D camera, float maxDistance) {
+    Vector3 roadCenter = {
+        (startPos.x + endPos.x) / 2.0f,
+        (startPos.y + endPos.y) / 2.0f,
+        (startPos.z + endPos.z) / 2.0f
+    };
+    
+    float distanceToCamera = Vector3Distance(camera.position, roadCenter);
+    return distanceToCamera <= maxDistance;
 }
 
 TrafficNetwork::~TrafficNetwork() {
@@ -166,18 +229,6 @@ void RoadSegment::Render() {
 
 }
 
-RoadSegment* TrafficNetwork::AddRoad(TrafficNode* node1, TrafficNode* node2) {
-    RoadSegment* rs = new RoadSegment();
-    rs->start = node1;
-    rs->end = node2;
-    rs->GenerateMesh();
-    rs->roadMaterial = dirtRoadRenderer->GetRoadMaterial();
-    roadSegments.push_back(rs);
-    node1->SetNeighbourNode(node2);
-    worldHandler->RegisterRoad(rs);
-    return rs;
-}
-
 void RoadSegment::GenerateMesh() {
     if (meshGenerated) return;
     roadMesh = RoadRenderer::GenerateRoadMesh(start->GetWorldPosition(), end->GetWorldPosition());
@@ -185,38 +236,25 @@ void RoadSegment::GenerateMesh() {
 }
 
 bool RoadSegment::IsVisibleToCamera(Camera3D* camera) {
-    Vector3 startPos = start->GetWorldPosition();
-    Vector3 endPos = end->GetWorldPosition();
+    // Vector3 startPos = start->GetWorldPosition();
+    // Vector3 endPos = end->GetWorldPosition();
     
-    // Simple bounding box check
-    Vector3 minBounds = {
-        fmin(startPos.x, endPos.x) - 5.0f,
-        -1.0f,
-        fmin(startPos.z, endPos.z) - 5.0f
-    };
-    Vector3 maxBounds = {
-        fmax(startPos.x, endPos.x) + 5.0f,
-        1.0f,
-        fmax(startPos.z, endPos.z) + 5.0f
-    };
+    // // Simple bounding box check
+    // Vector3 minBounds = {
+    //     fmin(startPos.x, endPos.x) - 5.0f,
+    //     -1.0f,
+    //     fmin(startPos.z, endPos.z) - 5.0f
+    // };
+    // Vector3 maxBounds = {
+    //     fmax(startPos.x, endPos.x) + 5.0f,
+    //     1.0f,
+    //     fmax(startPos.z, endPos.z) + 5.0f
+    // };
     
-    BoundingBox roadBounds = {minBounds, maxBounds};
+    // BoundingBox roadBounds = {minBounds, maxBounds};
     
-    // Check if bounding box is in camera frustum
-    return GetCameraMatrix(*camera).m15 > 0; // Simplified check
-}
-
-bool RoadSegment::ShouldRender(Camera3D camera, float maxDistance) {
-    Vector3 startPos = start->GetWorldPosition();
-    Vector3 endPos = end->GetWorldPosition();
-    Vector3 roadCenter = {
-        (startPos.x + endPos.x) / 2.0f,
-        (startPos.y + endPos.y) / 2.0f,
-        (startPos.z + endPos.z) / 2.0f
-    };
-    
-    float distanceToCamera = Vector3Distance(camera.position, roadCenter);
-    return distanceToCamera <= maxDistance;
+    // // Check if bounding box is in camera frustum
+    // return GetCameraMatrix(*camera).m15 > 0; // Simplified check
 }
 
 RoadSegment::~RoadSegment() {

@@ -33,9 +33,6 @@ void RoadBuilderService::BuildRoad(Vector3 startPos, Vector3 endPos) {
     float totalDistance = std::sqrt(dx * dx + dz * dz);
     int numSteps = (int)(totalDistance / segmentSpacing); //byl +1 ale koniec potem dodalismy
 
-
-
-
     int i = 0;
     helperInfo = CheckNodesStartFinish(startPos, endPos);
     currChunk = world->GetChunkForPosition(currentPos);
@@ -47,7 +44,7 @@ void RoadBuilderService::BuildRoad(Vector3 startPos, Vector3 endPos) {
     
     for (; i < numSteps; i++) {
         float t = (numSteps > 1) ? (float)i / (numSteps - 1) : 0.0f; // t goes from 0 to 1
-        TraceLog(LOG_DEBUG, "Iteration %i", i);
+        // TraceLog(LOG_DEBUG, "Iteration %i", i);
         currentPos = {
             startPos.x + dx * t,
             startPos.y,  // Keep Y constant
@@ -55,22 +52,22 @@ void RoadBuilderService::BuildRoad(Vector3 startPos, Vector3 endPos) {
         };
 
         if (i % nodeSpacing == 0 && !world->FindNearestNode(currentPos) && (numSteps - i) > 3) {
-            TraceLog(LOG_DEBUG, "Started building process");
+            // TraceLog(LOG_DEBUG, "Started building process");
             TrafficNode* node = networkManager->CreateNode(currentPos);
             if (lastNode && node != lastNode) {
                 networkManager->AddRoad(lastNode, node);
             }
             lastNode = node;
-            TraceLog(LOG_DEBUG, "Built road at iteration %i", i);
+            // TraceLog(LOG_DEBUG, "Built road at iteration %i", i);
         }
        
-        TRACE_COORD(currentPos);
+        // TRACE_COORD(currentPos);
         
     }
 
     currChunk = world->GetChunkForPosition(currentPos);
     if (helperInfo ==  NODE_END || helperInfo == NODE_STARTEND) {
-            TraceLog(LOG_DEBUG, "Checking ending pos");
+            // TraceLog(LOG_DEBUG, "Checking ending pos");
             TrafficNode* node = world->FindNearestNode(currentPos);
             if (lastNode && node != lastNode) {
                 networkManager->AddRoad(lastNode, node);
@@ -129,9 +126,9 @@ RoadBuilderService::NodeHeadTailInfo RoadBuilderService::CheckNodesStartFinish(V
         return conn;
     }
      
-    if (world->FindNearestRoad(startPos) || world->FindNearestRoad(endPos)) {
-        conn = (NodeHeadTailInfo)6;
-    }
+    // if (world->FindNearestRoad(startPos) || world->FindNearestRoad(endPos)) {
+    //     conn = (NodeHeadTailInfo)6;
+    // }
 
     //  Vector3 currChunk = world->GetChunkForPosition(startPos);
      if (world->FindNearestNode(startPos)) {

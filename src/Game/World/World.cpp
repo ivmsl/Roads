@@ -56,9 +56,9 @@ TrafficNode* World::FindNearestNode(Vector3 worldPosition, float maxRadius) {
         if (distance < minDistance) {
             minDistance = distance;
             nearestNode = node;
-            TraceLog(LOG_DEBUG, "\n\nChecking traffic node: \n\tDistance:%f, minDistance:%f \n\tCoord: %f %f %f", distance, minDistance);
-            TraceLog(LOG_DEBUG, "\t\tFound obstruction at: ");
-            TRACE_COORD(nearestNode->GetWorldPosition());
+            // TraceLog(LOG_DEBUG, "\n\nChecking traffic node: \n\tDistance:%f, minDistance:%f \n\tCoord: %f %f %f", distance, minDistance);
+            // TraceLog(LOG_DEBUG, "\t\tFound obstruction at: ");
+            // TRACE_COORD(nearestNode->GetWorldPosition());
         }
     }
 

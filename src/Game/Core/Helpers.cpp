@@ -25,5 +25,62 @@ namespace Helpers {
         // Return distance from point to closest point on segment
         return Vector3Distance(point, closestPoint);
     }
+
+    void ShrinkLineSegment(Vector3& start, Vector3& end, float shrinkDistance) {
+        // 1. Calculate direction vector
+        Vector3 direction = Vector3Subtract(end, start);
+        float totalLength = Vector3Length(direction);
+        
+        // 2. Safety check - don't shrink more than half the road
+        float maxShrink = totalLength * 0.4f; // Leave 20% in middle
+        float actualShrink = fmin(shrinkDistance, maxShrink);
+        
+        // 3. Normalize direction
+        Vector3 unitDirection = Vector3Normalize(direction);
+        
+        // 4. Calculate new endpoints
+        start = Vector3Add(start, Vector3Scale(unitDirection, actualShrink));
+        end = Vector3Subtract(end, Vector3Scale(unitDirection, actualShrink));
+        
+    }
+
+   std::vector<Vector3> GetConvexHull(std::vector<Vector3> points, Vector3 center) {
+    if (points.size() <= 3) return points;
+    
+    // Sort points by angle around center
+    std::sort(points.begin(), points.end(), 
+        [center](const Vector3& a, const Vector3& b) {
+            float angleA = atan2(a.z - center.z, a.x - center.x);
+            float angleB = atan2(b.z - center.z, b.x - center.x);
+            return angleA < angleB;
+        });
+    
+    std::vector<Vector3> hull;
+    TraceLog(LOG_DEBUG, "Unfiltered points");
+    // Graham scan algorithm (simplified for 2D)
+    for (const auto& point : points) {
+        TraceLog(LOG_DEBUG, "Current point: (%.2f, %.2f, %.2f)", point.x, point.y, point.z);
+        // Remove points that make a "right turn" (interior points)
+        while (hull.size() >= 2) {
+            Vector3 p1 = hull[hull.size() - 2];
+            Vector3 p2 = hull[hull.size() - 1];
+            
+            // Calculate cross product to determine turn direction
+            Vector3 v1 = Vector3Subtract(p2, p1);
+            Vector3 v2 = Vector3Subtract(point, p2);
+            
+            float cross = v1.x * v2.z - v1.z * v2.x;  // 2D cross product
+            
+            if (cross <= 0) {  // Right turn or collinear - remove p2
+                hull.pop_back();
+            } else {
+                break;  // Left turn - keep p2
+            }
+        }
+        hull.push_back(point);
+    }
+    
+    return hull;
+}
 }
 
