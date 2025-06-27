@@ -16,11 +16,12 @@ class InputHandler {
         void HandleRoadPlacement();
         // void HandleUIInput(); 
         // void HandleGameInput();
+        float selectedHeight = 0.0f;
     
     public:
         void Initialize(CameraController* camera, GridRenderer* grid, UIManager* uim);
         void ProcessInput();  // Main method called each frame
-
+        void ChangeHeight(int dh);
 };
 
 #endif

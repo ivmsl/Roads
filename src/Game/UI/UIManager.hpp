@@ -25,13 +25,16 @@ class UIManager {
 
     private:
         bool snap = false;
+        
+        Vector2 height;
         UIMode mode;
         bool isSelecting = false;
-        Vector2 startGridPos;
-        Vector2 currentGridPos;
+        Vector3 startGridPos;
+        Vector3 currentGridPos;
         RoadBuilderService* roadBuilder;
 
         Color brickColor = WHITE;
+
 
         // int nodeSize; //SQUARE node size;
 
@@ -44,18 +47,17 @@ class UIManager {
         void DrawTextInfo();
 
         Vector2 ScreenToWorld(Ray ray);
-        void StartSelection(Vector2 gridPos);
+        void StartSelection(Vector3 gridPos);
         void EndSelection();
-        void UpdateSelection(Vector2 gridPos);
+        void UpdateSelection(Vector3 gridPos);
         void CancelSelection();
         bool IsSelecting() { return isSelecting; }
         
         void CompleteSelectionAction();
 
-
         //Render group 
         void RenderSelection();
-        void RenderSelectionBrick(int x, int y);
+        void RenderSelectionBrick(Vector3 position);
 
         void ModeSelect(UIMode newMode);
 

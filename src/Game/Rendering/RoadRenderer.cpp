@@ -135,16 +135,14 @@ Mesh IntersectionRenderer::CreateMeshFromData(const std::vector<Vector3>& vertic
 }
 
 Mesh IntersectionRenderer::GenerateRoadEndMesh(Vector3 nodePosition, TrafficNode* connectedNode, float roadWidth) {
-    Vector3 start = nodePosition;
+    Vector3 center = nodePosition;
     Vector3 end = connectedNode->GetWorldPosition();
-    Helpers::ShrinkLineSegment(start, end, roadWidth);
-    Vector3 center = start;
-
+    
     Vector3 connectionDirection = Vector3Normalize(Vector3Subtract(end, center));
-
-    // Perpendicular to connectionDirection (on XZ plane)
     Vector3 perpendicular = Vector3Normalize(Vector3CrossProduct(connectionDirection, {0, 1, 0}));
-    // Vector3 halfWidthVec = Vector3Scale(perpendicular, roadWidth / 2.0f);
+    Vector3 scaledPerpendicular = Vector3Scale(perpendicular, roadWidth / 2.0f);
+
+    Vector3 shiftToDirection = Vector3Add(center, Vector3Scale(connectionDirection, roadWidth / 2));
 
     std::vector<Vector3> vertices;
     std::vector<Vector2> texCoords;
@@ -153,9 +151,6 @@ Mesh IntersectionRenderer::GenerateRoadEndMesh(Vector3 nodePosition, TrafficNode
     // Center vertex
     vertices.push_back(center);
     texCoords.push_back({0.5f, 0.5f});
-
-    // Road end edge
-    // Vector3 roadEnd = Vector3Add(center, Vector3Scale(connectionDirection, roadWidth * 0.5f));
 
     int numArcPoints = 12;
     float radius = roadWidth / 2.0f;
@@ -181,11 +176,50 @@ Mesh IntersectionRenderer::GenerateRoadEndMesh(Vector3 nodePosition, TrafficNode
         texCoords.push_back({u, v});
     }
     // Generate fan triangles
-    for (u_long i = 1; i < vertices.size() - 1; i++) {
+    u_long i = 1;
+    for (; i < vertices.size() - 1; i++) {
         indices.push_back(0); // center
         indices.push_back(i);
         indices.push_back(i + 1);
+        TraceLog(LOG_DEBUG, "Triangle: {%d %d %d}", 0, i, i + 1);
     }
+
+    TraceLog(LOG_DEBUG, "SIZES: %ul %ul %ul", vertices.size(), indices.size(), texCoords.size());
+    //Additional points!!!
+    //(i + 1) — last node
+    Vector3 new1 = Vector3Add(vertices.at(1), Vector3Scale(connectionDirection, roadWidth));
+    Vector3 new2 = Vector3Add(vertices.at(i), Vector3Scale(connectionDirection, roadWidth));
+
+    texCoords.push_back({new1.x, new1.z});
+    texCoords.push_back({new2.x, new2.z});
+    
+    vertices.push_back(new1);
+    vertices.push_back(new2);
+    
+    for (const auto& vertex : vertices ) {
+        TraceLog(LOG_DEBUG, "Current point: (%.2f, %.2f, %.2f)", vertex.x, vertex.y, vertex.z);
+    }
+
+    indices.push_back(i);
+    indices.push_back(i + 2);
+    indices.push_back(i + 1);
+
+    indices.push_back(1);
+    indices.push_back(i);
+    indices.push_back(i + 1);
+    
+    
+
+
+
+    // indices.push_back(i + 3);
+    // indices.push_back(1);
+    // indices.push_back(i + 1);
+    // Vector3 additionalPoint;
+
+    // vertices.push_back()
+    // shiftToDirection
+    
 
     return CreateMeshFromData(vertices, texCoords, indices);
 }
@@ -241,7 +275,7 @@ Mesh IntersectionRenderer::GenerateIntersectionMesh(Vector3 nodePosition, std::v
     
     if (connections.size() == 1) {
         // Road end - generate end cap
-        TraceLog(LOG_DEBUG, "Generating end ");
+        // TraceLog(LOG_DEBUG, "Generating end ");
         return GenerateRoadEndMesh(nodePosition, connections[0], roadWidth);
     }
     
@@ -327,13 +361,13 @@ Mesh IntersectionRenderer::GenerateComplexIntersectionMesh(Vector3 nodePosition,
         Vector3 currentDir = Vector3Normalize(
             Vector3Subtract(otherCenter, currCenter)
         );
-        TraceLog(LOG_DEBUG, "Current direction (%.2f, %.2f, %.2f) \ 
-                            from center (%.2f, %.2f, %.2f) \
-                            to (%.2f, %.2f, %.2f)", currentDir.x, currentDir.y, currentDir.z, 
-                                                    center.x, center.y, center.z,
-                                                    otherCenter.x, otherCenter.y, otherCenter.z);
-        wypadkowyDir = Vector3Add(currentDir, wypadkowyDir);
-        TraceLog(LOG_DEBUG, "Wypadkowy dir: (%.2f, %.2f, %.2f)", wypadkowyDir.x, wypadkowyDir.y, wypadkowyDir.z);
+        // // TraceLog(LOG_DEBUG, "Current direction (%.2f, %.2f, %.2f) \ 
+        //                     from center (%.2f, %.2f, %.2f) \
+        //                     to (%.2f, %.2f, %.2f)", currentDir.x, currentDir.y, currentDir.z, 
+        //                                             center.x, center.y, center.z,
+        //                                             otherCenter.x, otherCenter.y, otherCenter.z);
+        // wypadkowyDir = Vector3Add(currentDir, wypadkowyDir);
+        // TraceLog(LOG_DEBUG, "Wypadkowy dir: (%.2f, %.2f, %.2f)", wypadkowyDir.x, wypadkowyDir.y, wypadkowyDir.z);
 
         //Perpendicular vector — either side of
         Vector3 currentPerpendicular = Vector3Normalize(
@@ -380,10 +414,10 @@ Mesh IntersectionRenderer::GenerateComplexIntersectionMesh(Vector3 nodePosition,
     // filteredPoints.push_back(Vector3Subtract(center, Vector3Scale(wypadkowyDir, roadWidth / 2.0f)));
     
     // Add polygon points
-    TraceLog(LOG_DEBUG, "Filtered points");
+    // TraceLog(LOG_DEBUG, "Filtered points");
     for (const auto& point : filteredPoints) {        
         vertices.push_back(point);
-        TraceLog(LOG_DEBUG, "Current point: (%.2f, %.2f, %.2f)", point.x, point.y, point.z);
+        // TraceLog(LOG_DEBUG, "Current point: (%.2f, %.2f, %.2f)", point.x, point.y, point.z);
         float u = (point.x - center.x) / roadWidth + 0.5f;
         float v = (point.z - center.z) / roadWidth + 0.5f;
         texCoords.push_back({u, v});
@@ -395,7 +429,7 @@ Mesh IntersectionRenderer::GenerateComplexIntersectionMesh(Vector3 nodePosition,
         int next = (i + 1) % filteredPoints.size() + 1;
         // next = next == 0 ? next++ : next;
 
-        TraceLog(LOG_DEBUG, "Triangle: {%d %d %d}", 0, current, next);
+        // TraceLog(LOG_DEBUG, "Triangle: {%d %d %d}", 0, current, next);
         
         indices.push_back(0);
         indices.push_back(next);

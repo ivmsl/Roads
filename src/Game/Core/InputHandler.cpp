@@ -15,6 +15,10 @@ void InputHandler::ProcessInput() {
     HandleRoadPlacement();
 }
 
+void InputHandler::ChangeHeight(int dh) {
+    selectedHeight += dh;
+}
+
 void InputHandler::HandleCameraInput() {
     Vector2 movementDelta = {0.0f, 0.0f};
     bool shouldMove = false;
@@ -61,6 +65,13 @@ void InputHandler::HandleRoadPlacement() {
     
     }
 
+    if (IsKeyPressed(KEY_LEFT_BRACKET)) {
+        ChangeHeight(-1);
+    }
+    if (IsKeyPressed(KEY_RIGHT_BRACKET)) {
+        ChangeHeight(1);
+    }
+
     if (IsKeyPressed(KEY_N)) {
         uiManager->ModeSelect(UIManager::MAKE_NODES);
     }
@@ -85,7 +96,8 @@ void InputHandler::HandleRoadPlacement() {
     if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
         Ray ray = GetScreenToWorldRay(mousePos, camera);
         Vector2 gridPos = uiManager->ScreenToWorld(ray);
-        uiManager->StartSelection(gridPos);
+        Vector3 updPos = {gridPos.x, selectedHeight, gridPos.y};
+        uiManager->StartSelection(updPos);
 
         // Vector2 gridPos = roadPlacement->ScreenToGrid(mousePos, camera);
         // roadPlacement->StartPlacement(gridPos);
@@ -100,7 +112,8 @@ void InputHandler::HandleRoadPlacement() {
         // roadPlacement->UpdatePlacement(gridPos);
         Ray ray = GetScreenToWorldRay(mousePos, camera);
         Vector2 gridPos = uiManager->ScreenToWorld(ray);
-        uiManager->UpdateSelection(gridPos);
+        Vector3 updPos = {gridPos.x, selectedHeight, gridPos.y};
+        uiManager->UpdateSelection(updPos);
     }
     
     // Finish placement when mouse released
@@ -109,14 +122,4 @@ void InputHandler::HandleRoadPlacement() {
         uiManager->EndSelection();
     }
     
-    // Right mouse button to cancel placement
-    // if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-    //     if (roadPlacement->IsPlacing()) {
-    //         roadPlacement->CancelPlacement();
-    //     } else {
-    //         Vector2 gridPos = roadPlacement->ScreenToGrid(mousePos, camera);
-    //         roadPlacement->DeleteRoadPath(gridPos);
-    //     }
-        
-    // }
 }

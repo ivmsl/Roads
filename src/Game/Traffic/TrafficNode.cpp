@@ -60,6 +60,7 @@ void TrafficNode::GenerateMesh() {
 
 void TrafficNode::Render() const {
     if (meshGenerated) {
+        DrawCube(worldPosition, 2.0f, 2.0f, 2.0f, RED);
         DrawMesh(intMesh, *roadMaterial, MatrixIdentity());
     }
 }

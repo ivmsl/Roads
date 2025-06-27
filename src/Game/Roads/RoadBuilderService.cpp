@@ -10,15 +10,6 @@ RoadBuilderService::RoadBuilderService(World* w, TrafficNetwork* nM) {
     segmentSpacing = 10;
 }
 
-// void RoadBuilderService::Reset() {
-//     startPos = {0.0f, 0.0f, 0.0f};
-//     endPos = {0.0f, 0.0f, 0.0f};
-//     length = 0;
-//     lastNode = nullptr;
-//     nodeSpacing = 5;
-// }
-
-
 void RoadBuilderService::BuildRoad(Vector3 startPos, Vector3 endPos) {
 
     Vector3 currentPos = startPos;
@@ -27,7 +18,9 @@ void RoadBuilderService::BuildRoad(Vector3 startPos, Vector3 endPos) {
     NodeHeadTailInfo helperInfo = NO_CONNECTION;
 
     float dx = endPos.x - startPos.x;
+    float dy = endPos.y - startPos.y;
     float dz = endPos.z - startPos.z;
+    
     
     // Calculate total distance
     float totalDistance = std::sqrt(dx * dx + dz * dz);
@@ -47,7 +40,7 @@ void RoadBuilderService::BuildRoad(Vector3 startPos, Vector3 endPos) {
         // TraceLog(LOG_DEBUG, "Iteration %i", i);
         currentPos = {
             startPos.x + dx * t,
-            startPos.y,  // Keep Y constant
+            startPos.y + dy * t,  // Keep Y constant
             startPos.z + dz * t
         };
 
@@ -90,7 +83,9 @@ bool RoadBuilderService::CheckIfObstructedOnTheLine(Vector3 startPos, Vector3 en
     // Vector3 currChunk;
 
     float dx = endPos.x - startPos.x;
+    float dy = endPos.y - startPos.y;
     float dz = endPos.z - startPos.z;
+    
     
     // Calculate total distance
     float totalDistance = std::sqrt(dx * dx + dz * dz);
