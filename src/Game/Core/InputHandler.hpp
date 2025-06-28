@@ -6,14 +6,25 @@
 #include "Game/Rendering/GridRender.hpp"
 #include "Game/UI/UIManager.hpp"
 
+class UIManager;
+
 class InputHandler {
+    public:
+         enum EnabledHandles {
+            CAMERA = 1,
+            ROADPLACE = 1 << 1,
+            MENU = 1 << 2
+        };
     private:
         CameraController* cameraController;
         GridRenderer* gridRenderer;
         UIManager* uiManager;
 
+        int enabledHandles;
+
         void HandleCameraInput();
         void HandleRoadPlacement();
+        void HandleMenuSelection();
         // void HandleUIInput(); 
         // void HandleGameInput();
         float selectedHeight = 0.0f;
@@ -22,6 +33,9 @@ class InputHandler {
         void Initialize(CameraController* camera, GridRenderer* grid, UIManager* uim);
         void ProcessInput();  // Main method called each frame
         void ChangeHeight(int dh);
-};
+
+        void EnableHandle(EnabledHandles handle);
+        void DisableHandle(EnabledHandles handle);
+};  
 
 #endif

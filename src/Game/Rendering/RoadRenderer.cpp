@@ -140,9 +140,9 @@ Mesh IntersectionRenderer::GenerateRoadEndMesh(Vector3 nodePosition, TrafficNode
     
     Vector3 connectionDirection = Vector3Normalize(Vector3Subtract(end, center));
     Vector3 perpendicular = Vector3Normalize(Vector3CrossProduct(connectionDirection, {0, 1, 0}));
-    Vector3 scaledPerpendicular = Vector3Scale(perpendicular, roadWidth / 2.0f);
+    // Vector3 scaledPerpendicular = Vector3Scale(perpendicular, roadWidth / 2.0f);
 
-    Vector3 shiftToDirection = Vector3Add(center, Vector3Scale(connectionDirection, roadWidth / 2));
+    // Vector3 shiftToDirection = Vector3Add(center, Vector3Scale(connectionDirection, roadWidth / 2));
 
     std::vector<Vector3> vertices;
     std::vector<Vector2> texCoords;
@@ -333,7 +333,7 @@ Mesh IntersectionRenderer::GenerateComplexIntersectionMesh(Vector3 nodePosition,
     TraceLog(LOG_DEBUG, "Generating intersections for %i connections with width %f", connections.size(), roadWidth);                                                
 
     Vector3 center = nodePosition;
-    float halfWidth = roadWidth / 2.0f;
+    // float halfWidth = roadWidth / 2.0f;
     
     // Create intersection polygon points
     std::vector<Vector3> polygonPoints;
@@ -361,7 +361,7 @@ Mesh IntersectionRenderer::GenerateComplexIntersectionMesh(Vector3 nodePosition,
         Vector3 currentDir = Vector3Normalize(
             Vector3Subtract(otherCenter, currCenter)
         );
-        // // TraceLog(LOG_DEBUG, "Current direction (%.2f, %.2f, %.2f) \ 
+        // // TraceLog(LOG_DEBUG, "Current direction (%.2f, %.2f, %.2f) \
         //                     from center (%.2f, %.2f, %.2f) \
         //                     to (%.2f, %.2f, %.2f)", currentDir.x, currentDir.y, currentDir.z, 
         //                                             center.x, center.y, center.z,

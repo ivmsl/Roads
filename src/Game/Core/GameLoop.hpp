@@ -9,11 +9,15 @@
 #include "InputHandler.hpp"
 #include "Game/World/World.hpp"
 #include "Game/Traffic/TrafficNode.hpp"
+#include "Stager.hpp"
 
-
+class GameStage;
+class InputHandler;
+class UIManager;
 
 class GameLoop {
     private: 
+        GameStage* gameStageHandler;
         CameraController* camera;
         GridRenderer* grid;
         InputHandler* input;
@@ -22,13 +26,14 @@ class GameLoop {
         World* worldHandler;
         RoadBuilderService* roadBuilder;
         bool isRunning;
+        
 
     public: 
         void Initialize(int screenW, int screenH);  
         void Run();         
         void Update();      
         void Render();
-        void RenderDebugInfo();      
+        void RenderDebugInfo();   
         void Cleanup();     
 
 };

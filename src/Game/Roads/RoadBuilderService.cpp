@@ -83,7 +83,7 @@ bool RoadBuilderService::CheckIfObstructedOnTheLine(Vector3 startPos, Vector3 en
     // Vector3 currChunk;
 
     float dx = endPos.x - startPos.x;
-    float dy = endPos.y - startPos.y;
+    // float dy = endPos.y - startPos.y;
     float dz = endPos.z - startPos.z;
     
     

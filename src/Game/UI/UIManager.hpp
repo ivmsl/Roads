@@ -3,14 +3,18 @@
 
 #include "raylib.h"
 #include "Game/Roads/RoadBuilderService.hpp"
+#include "Game/Core/InputHandler.hpp"
+#include "Game/Core/Stager.hpp"
 #include <functional>
 #include "Helpers.hpp"
+#include "UIMenu.hpp"
 
+class GameStage;
 
 class UIManager {
     public:
 
-        UIManager(RoadBuilderService* rb);
+        UIManager(RoadBuilderService* rb, GameStage* sh);
         enum UIMode {
             IDLE,
             MAKE_NODES,
@@ -21,19 +25,23 @@ class UIManager {
             DELETE,
             INFO_SELECT
         };
+        
+        friend class InputHandler;
         // using TraceAlgorytm = std::function<void(Vector2 startGridPos, Vector2 currentGridPos, SelectionMetadata mtd, std::function<void(int x, int y, SelectionMetadata mtd)> action)>; //alias aby korzystać z nazwy TraceAlgorytm
 
     private:
         bool snap = false;
         
-        Vector2 height;
+        // Vector2 height;
         UIMode mode;
         bool isSelecting = false;
         Vector3 startGridPos;
         Vector3 currentGridPos;
         RoadBuilderService* roadBuilder;
+        GameStage* stagerHandler;
 
         Color brickColor = WHITE;
+        Menu* currentMenu;
 
 
         // int nodeSize; //SQUARE node size;
@@ -45,6 +53,8 @@ class UIManager {
 
         // void SetAlgorytm(TraceAlgorytm alg);
         void DrawTextInfo();
+        void RenderMenu();
+        void ActOnMenu();
 
         Vector2 ScreenToWorld(Ray ray);
         void StartSelection(Vector3 gridPos);
@@ -62,6 +72,7 @@ class UIManager {
         void ModeSelect(UIMode newMode);
 
         void ToggleSnap();
+        void HandleMenuSelection();
 
         //MODE — BUILD ROAD
         //MODE - DELETE

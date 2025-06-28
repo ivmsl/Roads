@@ -270,6 +270,7 @@ bool RoadSegment::IsVisibleToCamera(Camera3D* camera) {
     
     // // Check if bounding box is in camera frustum
     // return GetCameraMatrix(*camera).m15 > 0; // Simplified check
+    return true;
 }
 
 RoadSegment::~RoadSegment() {

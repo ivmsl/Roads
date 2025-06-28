@@ -11,8 +11,17 @@ void InputHandler::Initialize(CameraController* camera, GridRenderer* grid, UIMa
 }
 
 void InputHandler::ProcessInput() {
-    HandleCameraInput();
-    HandleRoadPlacement();
+    if (enabledHandles & (int) MENU) {
+        HandleMenuSelection();
+    }
+    
+    if (enabledHandles & (int) CAMERA) {
+        HandleCameraInput();
+    }
+
+    if (enabledHandles & (int) ROADPLACE) {
+        HandleRoadPlacement();
+    }
 }
 
 void InputHandler::ChangeHeight(int dh) {
@@ -123,3 +132,27 @@ void InputHandler::HandleRoadPlacement() {
     }
     
 }
+
+void InputHandler::EnableHandle(EnabledHandles handle) {
+    enabledHandles |= (int) handle;
+}
+
+void InputHandler::DisableHandle(EnabledHandles handle) {
+    enabledHandles != (int) handle;
+}
+
+void InputHandler::HandleMenuSelection() {
+
+    if (IsKeyPressed(KEY_UP)) {
+        uiManager->currentMenu->MenuUp();
+    }
+
+    if (IsKeyPressed(KEY_DOWN)) {
+        uiManager->currentMenu->MenuDown();
+    }
+
+    if (IsKeyPressed(KEY_ENTER)) {
+        uiManager->HandleMenuSelection();
+    }
+
+};

@@ -7,6 +7,9 @@ void GameLoop::Initialize(int screenW, int screenH) {
     InitWindow(screenW, screenH, "Games of Roads. Alpha 0.0.0");
     SetTargetFPS(60); 
 
+    gameStageHandler = new GameStage();
+    gameStageHandler->ChangeStage(GameStage::GAME_INIT);
+
     worldHandler = new World();
 
     camera = new CameraController();
@@ -18,40 +21,64 @@ void GameLoop::Initialize(int screenW, int screenH) {
     trafficNetwork = new TrafficNetwork(worldHandler);
     roadBuilder = new RoadBuilderService(worldHandler, trafficNetwork);
 
-    uiManager = new UIManager(roadBuilder);
+    uiManager = new UIManager(roadBuilder, gameStageHandler);
 
     input = new InputHandler();
     input->Initialize(camera, grid, uiManager);
+    input->EnableHandle(InputHandler::MENU);
     isRunning = 1;
+
+    gameStageHandler->ChangeStage(GameStage::GAME_MENU);
 
     
 }
 
 void GameLoop::Render() {
-    BeginDrawing();
-    // ClearBackground(DARKGREEN);
-    ClearBackground(SKYBLUE);
-
-    BeginMode3D(camera->GetCamera());
-        // Draw your 3D world here (grid, roads, etc.)
-        // grid->Render();
-
-        DrawCube({0, 0, 0}, 1, 1, 1, RED);  // Test cube at origin
-        // DrawCube({50.0f, 0.0f, 50.0f}, 10.0f, 10.0f, 10.0f, RED);
-        // DrawCubeWires({50.0f, 0.0f, 50.0f}, 10.0f, 10.0f, 10.0f, WHITE);
-        // DrawCube({0.0f, 2.5f, 0.0f}, 5.0f, 5.0f, 5.0f, GREEN);
-        // DrawCube({100.0f, 2.5f, 100.0f}, 5.0f, 5.0f, 5.0f, BLUE);
-
-        DrawLine3D({0, 0, 0}, {0, 20, 0}, GREEN);  // Y-axis reference (up)
-        DrawLine3D({0, 0, 0}, {30, 0, 0}, RED);  // X-axis reference (up)
-        DrawLine3D({0, 0, 0}, {0, 0, 30}, BLUE);  // X-axis reference (up)
-        uiManager->RenderSelection();
-        RenderDebugInfo();    
-    EndMode3D();
     
-    uiManager->DrawTextInfo();
-    DrawFPS(GetScreenWidth() - 80, 10);
-    EndDrawing();
+    switch (gameStageHandler->GetCurrentStageInfo())
+    {
+    case GameStage::GAME_MENU: {
+        BeginDrawing();
+            ClearBackground(BLACK);
+            uiManager->RenderMenu();
+        EndDrawing();
+        break;
+    }
+    case GameStage::GAME_START: {
+        input->DisableHandle(InputHandler::MENU);
+        input->EnableHandle(InputHandler::CAMERA);
+        input->EnableHandle(InputHandler::ROADPLACE);
+        gameStageHandler->ChangeStage(GameStage::GAME_RUNNING);
+        return;
+        break;
+    }
+    case GameStage::GAME_RUNNING: {
+        BeginDrawing();
+        // ClearBackground(DARKGREEN);
+        ClearBackground(SKYBLUE);
+
+        BeginMode3D(camera->GetCamera());
+
+            DrawCube({0, 0, 0}, 1, 1, 1, RED);  // Test cube at origin
+            // DrawCube({50.0f, 0.0f, 50.0f}, 10.0f, 10.0f, 10.0f, RED);
+            // DrawCubeWires({50.0f, 0.0f, 50.0f}, 10.0f, 10.0f, 10.0f, WHITE);
+            // DrawCube({0.0f, 2.5f, 0.0f}, 5.0f, 5.0f, 5.0f, GREEN);
+            // DrawCube({100.0f, 2.5f, 100.0f}, 5.0f, 5.0f, 5.0f, BLUE);
+
+            DrawLine3D({0, 0, 0}, {0, 20, 0}, GREEN);  // Y-axis reference (up)
+            DrawLine3D({0, 0, 0}, {30, 0, 0}, RED);  // X-axis reference (up)
+            DrawLine3D({0, 0, 0}, {0, 0, 30}, BLUE);  // X-axis reference (up)
+            uiManager->RenderSelection();
+            RenderDebugInfo();    
+        EndMode3D();
+        
+        uiManager->DrawTextInfo();
+        DrawFPS(GetScreenWidth() - 80, 10);
+        EndDrawing();
+    }
+    default:
+        break;
+    }   
 }
 
 void GameLoop::RenderDebugInfo() {
@@ -110,11 +137,11 @@ void GameLoop::Run() {
 }
 
 void GameLoop::Update() {
-    // camera->Update(); 
     input->ProcessInput();
 }
 
 void GameLoop::Cleanup() {
+    gameStageHandler->ChangeStage(GameStage::GAME_CLEANUP);
     CloseWindow(); 
     delete worldHandler;
     delete trafficNetwork;
@@ -123,4 +150,6 @@ void GameLoop::Cleanup() {
     delete input;
     delete camera;
     delete grid;
+    delete gameStageHandler;
+
 }

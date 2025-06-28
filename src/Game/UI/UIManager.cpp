@@ -5,12 +5,14 @@
 #include "Game/Core/Helpers.hpp"
 
 
-UIManager::UIManager(RoadBuilderService* rb) {
+UIManager::UIManager(RoadBuilderService* rb, GameStage* sh){
 
     isSelecting = false;
     startGridPos = {-1.0f, -1.0f, -1.0f};
     currentGridPos = {-1.0f, -1.0f, -1.0};
     roadBuilder = rb;
+    stagerHandler = sh;
+    currentMenu = new Menu;
 }
 
 Vector2 UIManager::ScreenToWorld(Ray ray) {
@@ -61,7 +63,7 @@ void UIManager::UpdateSelection(Vector3 gridPos) {
     if (snap) {
         Vector3 originalEndPos = currentGridPos;
         float dx = std::abs(startGridPos.x - currentGridPos.x);
-        float dy = std::abs(startGridPos.y - currentGridPos.y);
+        // float dy = std::abs(startGridPos.y - currentGridPos.y);
         float dz = std::abs(startGridPos.z - currentGridPos.z);
         float dxdz = std::abs(dx - dz);
 
@@ -172,7 +174,7 @@ void UIManager::RenderSelection() {
      for (int i = 0; i < numSteps; i++) {
         float t = (numSteps > 1) ? (float)i / (numSteps - 1) : 0.0f; // t goes from 0 to 1
         
-        Vector3 renderPlace = {
+        renderPlace = {
             startGridPos.x + dx * t,
             startGridPos.y + dy * t,
             startGridPos.z + dz * t,
@@ -263,10 +265,27 @@ void UIManager::DrawTextInfo() {
     yOffset += lineHeight;
 }
 
+void UIManager::RenderMenu() {
+    currentMenu->RenderMenu();
+}
+
 void UIManager::ModeSelect(UIMode newMode) {
     mode = newMode;
 }
 
 void UIManager::ToggleSnap() {
     snap = !snap;
+}
+
+void UIManager::HandleMenuSelection() {
+    if (stagerHandler->GetCurrentStageInfo() == GameStage::GAME_MENU) {
+        if (currentMenu->GetSelectedOption() == Menu::START_GAME) {
+            stagerHandler->GoToNextStage();
+        }
+        else {
+            stagerHandler->ChangeStage(GameStage::GAME_CLEANUP);
+        }
+        
+    }
+    
 }
