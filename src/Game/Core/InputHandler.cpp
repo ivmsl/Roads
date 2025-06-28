@@ -138,7 +138,7 @@ void InputHandler::EnableHandle(EnabledHandles handle) {
 }
 
 void InputHandler::DisableHandle(EnabledHandles handle) {
-    enabledHandles != (int) handle;
+    enabledHandles ^= (int) handle;
 }
 
 void InputHandler::HandleMenuSelection() {
