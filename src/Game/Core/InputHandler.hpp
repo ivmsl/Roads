@@ -5,6 +5,7 @@
 #include "Game/Rendering/CameraController.hpp"
 #include "Game/Rendering/GridRender.hpp"
 #include "Game/UI/UIManager.hpp"
+#include "Game/World/World.hpp"
 
 class UIManager;
 
@@ -19,6 +20,7 @@ class InputHandler {
         CameraController* cameraController;
         GridRenderer* gridRenderer;
         UIManager* uiManager;
+        World* worldHandler;
 
         int enabledHandles;
 
@@ -30,7 +32,7 @@ class InputHandler {
         float selectedHeight = 0.0f;
     
     public:
-        void Initialize(CameraController* camera, GridRenderer* grid, UIManager* uim);
+        void Initialize(CameraController* camera, GridRenderer* grid, UIManager* uim, World* wh);
         void ProcessInput();  // Main method called each frame
         void ChangeHeight(int dh);
 

@@ -24,7 +24,7 @@ void GameLoop::Initialize(int screenW, int screenH) {
     uiManager = new UIManager(roadBuilder, gameStageHandler);
 
     input = new InputHandler();
-    input->Initialize(camera, grid, uiManager);
+    input->Initialize(camera, grid, uiManager, worldHandler);
     input->EnableHandle(InputHandler::MENU);
     isRunning = 1;
 
@@ -69,6 +69,7 @@ void GameLoop::Render() {
             DrawLine3D({0, 0, 0}, {30, 0, 0}, RED);  // X-axis reference (up)
             DrawLine3D({0, 0, 0}, {0, 0, 30}, BLUE);  // X-axis reference (up)
             uiManager->RenderSelection();
+            worldHandler->RenderChunks();
             RenderDebugInfo();    
         EndMode3D();
         
@@ -143,12 +144,12 @@ void GameLoop::Update() {
 void GameLoop::Cleanup() {
     gameStageHandler->ChangeStage(GameStage::GAME_CLEANUP);
     CloseWindow(); 
-    delete worldHandler;
     delete trafficNetwork;
     delete roadBuilder;
     delete uiManager;
     delete input;
     delete camera;
+    delete worldHandler;
     delete grid;
     delete gameStageHandler;
 

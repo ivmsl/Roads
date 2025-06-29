@@ -208,8 +208,14 @@ bool TrafficNetwork::ShouldRender(Vector3 startPos, Vector3 endPos, Camera3D cam
 }
 
 TrafficNetwork::~TrafficNetwork() {
-    for (auto segment : roadSegments) delete segment;
-    for (auto node : nodes) delete node;
+    for (auto segment : roadSegments) {
+        worldHandler->DeregisterRoad(segment);
+        delete segment;
+    }
+    for (auto node : nodes) {
+        delete node;
+        worldHandler->DeregisterTrafficNode(node);
+    }
 }
 
 //********************************************************

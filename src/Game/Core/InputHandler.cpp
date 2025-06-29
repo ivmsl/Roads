@@ -1,13 +1,14 @@
 #include "raylib.h"
 #include "raymath.h"
 #include "InputHandler.hpp"
-#include "Game/Rendering/CameraController.hpp"
-#include "Game/Rendering/GridRender.hpp"
 
-void InputHandler::Initialize(CameraController* camera, GridRenderer* grid, UIManager* uim) {
+
+
+void InputHandler::Initialize(CameraController* camera, GridRenderer* grid, UIManager* uim, World* wh) {
     cameraController = camera;
     gridRenderer = grid;
     uiManager = uim;
+    worldHandler = wh;
 }
 
 void InputHandler::ProcessInput() {
@@ -106,6 +107,8 @@ void InputHandler::HandleRoadPlacement() {
         Ray ray = GetScreenToWorldRay(mousePos, camera);
         Vector2 gridPos = uiManager->ScreenToWorld(ray);
         Vector3 updPos = {gridPos.x, selectedHeight, gridPos.y};
+        float height = worldHandler->GetHeightForPos(updPos);
+        updPos.y = height + selectedHeight + 0.3f;
         uiManager->StartSelection(updPos);
 
         // Vector2 gridPos = roadPlacement->ScreenToGrid(mousePos, camera);
@@ -121,7 +124,9 @@ void InputHandler::HandleRoadPlacement() {
         // roadPlacement->UpdatePlacement(gridPos);
         Ray ray = GetScreenToWorldRay(mousePos, camera);
         Vector2 gridPos = uiManager->ScreenToWorld(ray);
-        Vector3 updPos = {gridPos.x, selectedHeight, gridPos.y};
+        Vector3 updPos = {gridPos.x, 0.0f, gridPos.y};
+        float height = worldHandler->GetHeightForPos(updPos);
+        updPos.y = height + selectedHeight + 0.3f;
         uiManager->UpdateSelection(updPos);
     }
     

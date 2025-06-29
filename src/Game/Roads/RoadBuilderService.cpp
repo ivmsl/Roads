@@ -21,6 +21,14 @@ void RoadBuilderService::BuildRoad(Vector3 startPos, Vector3 endPos) {
     float dy = endPos.y - startPos.y;
     float dz = endPos.z - startPos.z;
     
+    // TraceLog(LOG_DEBUG, "Checking left and right directions");
+    // TraceLog(LOG_DEBUG, "Starting points are: %f %f %f", startPos.x, startPos.y, startPos.z);
+    // Vector3 direction = Vector3Normalize(Vector3Subtract(endPos, startPos));
+    // Vector3 roadWidthShift = Vector3CrossProduct(direction, {.0f, 1.f, .0f}); 
+    // roadWidthShift = Vector3Scale(roadWidthShift, 4.0f);
+    // TraceLog(LOG_DEBUG, "RoadShift (width) vector is: %f %f %f", roadWidthShift.x, roadWidthShift.y, roadWidthShift.z);
+    // Vector3 testingShift = Vector3Add(startPos, roadWidthShift);
+    // TraceLog(LOG_DEBUG, "Added to starting point (width): %f %f %f", testingShift.x, testingShift.y, testingShift.z);
     
     // Calculate total distance
     float totalDistance = std::sqrt(dx * dx + dz * dz);
@@ -43,6 +51,13 @@ void RoadBuilderService::BuildRoad(Vector3 startPos, Vector3 endPos) {
             startPos.y + dy * t,  // Keep Y constant
             startPos.z + dz * t
         };
+
+        // float worldHeight = std::max(world->GetHeightForPos(Vector3Subtract(roadWidthShift, currentPos)), world->GetHeightForPos(Vector3Add(roadWidthShift, currentPos)));
+        // worldHeight = std::max(world->GetHeightForPos(currentPos), worldHeight); 
+        
+        // if (worldHeight < currentPos.y) {
+        //     currentPos.y+=4.0f;
+        // }
 
         if (i % nodeSpacing == 0 && !world->FindNearestNode(currentPos) && (numSteps - i) > 3) {
             // TraceLog(LOG_DEBUG, "Started building process");
@@ -83,9 +98,9 @@ bool RoadBuilderService::CheckIfObstructedOnTheLine(Vector3 startPos, Vector3 en
     // Vector3 currChunk;
 
     float dx = endPos.x - startPos.x;
-    // float dy = endPos.y - startPos.y;
+    float dy = endPos.y - startPos.y;
     float dz = endPos.z - startPos.z;
-    
+
     
     // Calculate total distance
     float totalDistance = std::sqrt(dx * dx + dz * dz);
@@ -96,9 +111,12 @@ bool RoadBuilderService::CheckIfObstructedOnTheLine(Vector3 startPos, Vector3 en
         
         currentPos = {
             startPos.x + dx * t,
-            startPos.y,  // Keep Y constant
+            startPos.y + dy * t,  // Keep Y constant
             startPos.z + dz * t
         };
+
+// 
+        // currentPos.y = world->GetHeightForPos(currentPos) + dy * t; 
         
         // Vector3 currChunk = world->GetChunkForPosition(currentPos);
         if (world->FindNearestNode(currentPos) || world->FindNearestRoad(currentPos)) {
@@ -126,12 +144,12 @@ RoadBuilderService::NodeHeadTailInfo RoadBuilderService::CheckNodesStartFinish(V
     // }
 
     //  Vector3 currChunk = world->GetChunkForPosition(startPos);
-     if (world->FindNearestNode(startPos)) {
+     if (world->FindNearestNode(startPos, 10.0f)) {
         conn = (NodeHeadTailInfo)1;
      }
      
     //  currChunk = world->GetChunkForPosition(endPos);
-     if (world->FindNearestNode(endPos)) {
+     if (world->FindNearestNode(endPos, 10.0f)) {
         conn = (NodeHeadTailInfo)((int)conn + 2);
      }
 

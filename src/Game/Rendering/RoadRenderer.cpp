@@ -59,7 +59,7 @@ Mesh RoadRenderer::GenerateRoadMesh(Vector3 start, Vector3 end, float width) {
     mesh.texcoords = (float*)MemAlloc(mesh.vertexCount * 2 * sizeof(float));
     mesh.indices = (unsigned short*)MemAlloc(mesh.triangleCount * 3 * sizeof(unsigned short));
     
-    // **COPY THE ACTUAL DATA** - This was missing!
+    
     for (int i = 0; i < 4; i++) {
         mesh.vertices[i * 3 + 0] = vertices[i].x;
         mesh.vertices[i * 3 + 1] = vertices[i].y;

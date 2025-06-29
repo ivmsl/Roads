@@ -189,3 +189,43 @@ RoadSegment* World::DeregisterRoad(RoadSegment* road) {
     
     return road;
 }
+
+void World::RegisterChunk(Vector3 chunkID) {
+    Chunk* chunk = new Chunk(chunkID, this, terrGen);
+    chunks.insert({chunkID, chunk});
+    chunk->GenerateMeshForChunk(terrGen);
+}
+
+void World::RenderChunks() {
+    for (const auto& chunk : chunks) {
+        chunk.second->Render();
+    }
+}
+
+float World::GetHeightForPos(Vector3 position) {
+    return terrGen->GetHeightAtPosition(position.x, position.z);
+}
+
+//*********************************************
+//*
+//*                  CHUNK
+//*
+//*********************************************
+
+void Chunk::GenerateMeshForChunk(TerrainGenerator* tg) {
+    if (!tg) return;
+    chunkMesh = tg->GenerateTerrainMesh(chunkID);
+    meshGenerated = true;
+
+}
+
+void Chunk::Render() {
+    if (!meshGenerated) return;
+    DrawMesh(chunkMesh, *chunkMaterial, MatrixIdentity());
+ }
+
+Chunk::~Chunk() {
+    if (meshGenerated) {
+        UnloadMesh(chunkMesh);
+    }
+}   
