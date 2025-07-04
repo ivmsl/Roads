@@ -66,9 +66,9 @@ void GameLoop::Render() {
             // DrawCube({0.0f, 2.5f, 0.0f}, 5.0f, 5.0f, 5.0f, GREEN);
             // DrawCube({100.0f, 2.5f, 100.0f}, 5.0f, 5.0f, 5.0f, BLUE);
 
-            DrawLine3D({0, 0, 0}, {0, 20, 0}, GREEN);  // Y-axis reference (up)
-            DrawLine3D({0, 0, 0}, {30, 0, 0}, RED);  // X-axis reference (up)
-            DrawLine3D({0, 0, 0}, {0, 0, 30}, BLUE);  // X-axis reference (up)
+            DrawLine3D({0, 0, 0}, {0, 20, 0}, GREEN); 
+            DrawLine3D({0, 0, 0}, {30, 0, 0}, RED);  
+            DrawLine3D({0, 0, 0}, {0, 0, 30}, BLUE);  
             uiManager->RenderSelection();
             worldHandler->RenderChunks();
             RenderDebugInfo();    
@@ -84,7 +84,7 @@ void GameLoop::Render() {
 }
 
 void GameLoop::RenderDebugInfo() {
-    int yOffset = 160;  // Start below your existing UI text
+    int yOffset = 160;  
     int lineHeight = 16;
     Color textColor = WHITE;
     Color labelColor = YELLOW;

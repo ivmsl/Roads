@@ -11,7 +11,7 @@ class Vehicle {
         TrafficNode* nextNode;
 
         RoadSegment* currentRoad;
-        Vector3 direction; //recalculate on each road;
+        Vector3 direction; //recalculate on each node;
 
         float speed;
     public:

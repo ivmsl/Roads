@@ -33,7 +33,7 @@ class InputHandler {
     
     public:
         void Initialize(CameraController* camera, GridRenderer* grid, UIManager* uim, World* wh);
-        void ProcessInput();  // Main method called each frame
+        void ProcessInput(); 
         void ChangeHeight(int dh);
 
         void EnableHandle(EnabledHandles handle);

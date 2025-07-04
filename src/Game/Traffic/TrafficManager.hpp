@@ -24,4 +24,5 @@ class TrafficManager {
         void RecalculateDirection(Vehicle* vehicle);
         void RenderVehicle();
         void DespawnVehicle(Vehicle*& veh);
+        ~TrafficManager();
 };

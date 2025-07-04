@@ -21,9 +21,9 @@ enum class NodeType {
 
 class TrafficNode : IDebuggable {
     protected: 
-        Vector3 worldPosition;     // 3D position in world space
+        Vector3 worldPosition;     
         Vector3 chunkInfo;
-        std::vector<TrafficNode*> connections;  // Adjacent nodes
+        std::vector<TrafficNode*> connections;  
         float speedLimit;
 
         Material* roadMaterial;
@@ -75,8 +75,8 @@ class RoadSegment {
         TrafficNode* end;
 
         Material* roadMaterial;
-        Mesh roadMesh;        // NEW: Store the actual road geometry
-        bool meshGenerated = false;  // NEW: Track if mesh is built
+        Mesh roadMesh;       
+        bool meshGenerated = false;  
 
         void Render();
         void GenerateMesh();

@@ -64,7 +64,12 @@ void TrafficManager::DespawnVehicle(Vehicle*& veh) {
     vehicles.erase(
         std::remove(vehicles.begin(), vehicles.end(), veh),
         vehicles.end()
-    );
-    
+    );  
     delete veh;
+}
+
+TrafficManager::~TrafficManager() {
+    for (auto veh : vehicles) {
+        delete veh;
+    }
 }

@@ -11,11 +11,11 @@ enum GridMode {
 class GridRenderer {
     private:
         bool gridVisible = true;
-        int gridSize = 100;        // 100x100 tiles
-        float tileSize = 10.0f;    // 10x10 meters per tile
+        int gridSize = 100;        // 100x100 blokow
+        float tileSize = 10.0f;    
         Color majorLineColor = GRAY;
         Color minorLineColor = LIGHTGRAY;
-        int majorLineInterval = 10; // Every 10th line is major
+        int majorLineInterval = 10; 
 
         GridMode mode;
     

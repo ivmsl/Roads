@@ -5,17 +5,17 @@
 class CameraController {
     private: 
         Camera3D camera;
-        Vector3 targetPosition = {50.0f, 0.0f, 50.0f};  // Center of 100x100 map
+        Vector3 targetPosition = {50.0f, 0.0f, 50.0f};  
         float tiltAngle = 50.0f; 
         float sideTilt = -20.0f;  
         float cameraDistance = 60.0f;
 
 
     public:
-        void Initialize();          // set up orthographic camera
-        void Update();              // handle pan/zoom
-        //Vector3 ScreenToWorld();    // mouse to world coordinates
-        Camera3D& GetCamera();       // for BeginMode3D()
+        void Initialize();          
+        void Update();              
+        //Vector3 ScreenToWorld();   
+        Camera3D& GetCamera();       
         inline void RecalculatePosition();
         void Pan(Vector2 movementDelta);
         void Zoom(float wheelDelta);

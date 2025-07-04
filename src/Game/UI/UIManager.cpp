@@ -209,14 +209,25 @@ void UIManager::RenderSelectionBrick(Vector3 position) {
 }
 
 void UIManager::DrawTextInfo() {
-    int yOffset = 160;  
+    int yOffset = 100;  
     int lineHeight = 16;
     Color textColor = WHITE;
     Color labelColor = YELLOW;
 
     yOffset -= 3 * lineHeight;
 
-    DrawText("=== Selected mode ===", 10, yOffset, 14, labelColor);
+    DrawText("=== Options ===", 10, yOffset, 14, labelColor);
+    yOffset += lineHeight;
+    DrawText("Press [N] to start building roads", 10, yOffset, 14, textColor);
+    yOffset += lineHeight;
+    DrawText("Press [C] to snap to straigt lines", 10, yOffset, 14, textColor);
+    yOffset += lineHeight;
+    DrawText("Press [X] to delete roads and nodes", 10, yOffset, 14, textColor);
+    yOffset += lineHeight;
+    DrawText("Press [J] to spawn vehicle~ish block that leads to 0.0, 0.0, 0.0", 10, yOffset, 14, textColor);
+    yOffset += lineHeight;
+
+    DrawText("=== Selected mode ===", 10, yOffset, 14, textColor);
     yOffset += lineHeight;
 
     switch (mode)

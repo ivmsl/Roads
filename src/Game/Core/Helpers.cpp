@@ -16,29 +16,20 @@ namespace Helpers {
         
         float t = Vector3DotProduct(pointToStart, line) / lineLength;
         
-        // Clamp t to [0, 1] to stay within the line segment
         t = fmaxf(0.0f, fminf(1.0f, t));
         
-        // Calculate the closest point on the line segment
         Vector3 closestPoint = Vector3Add(lineStart, Vector3Scale(line, t));
-        
-        // Return distance from point to closest point on segment
         return Vector3Distance(point, closestPoint);
     }
 
     void ShrinkLineSegment(Vector3& start, Vector3& end, float shrinkDistance) {
-        // 1. Calculate direction vector
         Vector3 direction = Vector3Subtract(end, start);
         float totalLength = Vector3Length(direction);
         
-        // 2. Safety check - don't shrink more than half the road
-        float maxShrink = totalLength * 0.4f; // Leave 20% in middle
+        float maxShrink = totalLength * 0.4f; // 20% w srodku
         float actualShrink = fmin(shrinkDistance, maxShrink);
         
-        // 3. Normalize direction
         Vector3 unitDirection = Vector3Normalize(direction);
-        
-        // 4. Calculate new endpoints
         start = Vector3Add(start, Vector3Scale(unitDirection, actualShrink));
         end = Vector3Subtract(end, Vector3Scale(unitDirection, actualShrink));
         
@@ -47,7 +38,6 @@ namespace Helpers {
    std::vector<Vector3> GetConvexHull(std::vector<Vector3> points, Vector3 center) {
     if (points.size() <= 3) return points;
     
-    // Sort points by angle around center
     std::sort(points.begin(), points.end(), 
         [center](const Vector3& a, const Vector3& b) {
             float angleA = atan2(a.z - center.z, a.x - center.x);

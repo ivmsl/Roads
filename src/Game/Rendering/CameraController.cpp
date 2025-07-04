@@ -12,9 +12,9 @@ inline void CameraController::RecalculatePosition() {
     
     camera.target = targetPosition;
     camera.position = {
-        targetPosition.x + baseZ * sin(sideRadians),    // X offset from side tilt
-        targetPosition.y + baseY,                       // Y height (same as before)
-        targetPosition.z - baseZ * cos(sideRadians)     // Z adjusted for side tilt
+        targetPosition.x + baseZ * sin(sideRadians),    
+        targetPosition.y + baseY,                       
+        targetPosition.z - baseZ * cos(sideRadians)     
     };
 }
 

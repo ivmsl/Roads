@@ -17,7 +17,7 @@ void GridRenderer::Render() {
         for (int i = 0; i <= gridSize; i++) {
             float x = i * tileSize;
 
-        // Choose color based on major/minor line
+        
             Color lineColor = (i % majorLineInterval == 0) ? majorLineColor : minorLineColor;
         
             Vector3 start = {x, 0.0f, 0.0f};
@@ -29,9 +29,8 @@ void GridRenderer::Render() {
         for (int i = 0; i <= gridSize; i++) {
             float z = i * tileSize;
         
-        // Choose color based on major/minor line
-        Color lineColor = (i % majorLineInterval == 0) ? majorLineColor : minorLineColor;
-        
+    
+        Color lineColor = (i % majorLineInterval == 0) ? majorLineColor : minorLineColor;       
         Vector3 start = {0.0f, 0.0f, z};
         Vector3 end = {worldSize, 0.0f, z};
         
