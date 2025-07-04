@@ -5,6 +5,7 @@
 #include "Game/Roads/RoadBuilderService.hpp"
 #include "Game/Core/InputHandler.hpp"
 #include "Game/Core/Stager.hpp"
+#include "Game/Traffic/TrafficManager.hpp"
 #include <functional>
 #include "Helpers.hpp"
 #include "UIMenu.hpp"
@@ -14,7 +15,7 @@ class GameStage;
 class UIManager {
     public:
 
-        UIManager(RoadBuilderService* rb, GameStage* sh);
+        UIManager(RoadBuilderService* rb, GameStage* sh, TrafficManager* tm);
         enum UIMode {
             IDLE,
             MAKE_NODES,
@@ -39,6 +40,7 @@ class UIManager {
         Vector3 currentGridPos;
         RoadBuilderService* roadBuilder;
         GameStage* stagerHandler;
+        TrafficManager* trafficManager;
 
         Color brickColor = WHITE;
         Menu* currentMenu;

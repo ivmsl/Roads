@@ -5,7 +5,7 @@
 #include "Game/Core/Helpers.hpp"
 
 
-UIManager::UIManager(RoadBuilderService* rb, GameStage* sh){
+UIManager::UIManager(RoadBuilderService* rb, GameStage* sh, TrafficManager* tm){
 
     isSelecting = false;
     startGridPos = {-1.0f, -1.0f, -1.0f};
@@ -13,6 +13,7 @@ UIManager::UIManager(RoadBuilderService* rb, GameStage* sh){
     roadBuilder = rb;
     stagerHandler = sh;
     currentMenu = new Menu;
+    trafficManager = tm;
 }
 
 Vector2 UIManager::ScreenToWorld(Ray ray) {
@@ -43,7 +44,8 @@ void UIManager::UpdateSelection(Vector3 gridPos) {
     if (!isSelecting) return;
 
     switch (mode)
-    {
+    {   
+        case ROAD_UPDATE: 
         case ROAD_DELETE: {
             startGridPos = gridPos;
             currentGridPos = gridPos;
@@ -131,6 +133,11 @@ void UIManager::CompleteSelectionAction() {
         
         // Vector3 position = {currentGridPos.x, 0.0f, currentGridPos.y};
         roadBuilder->HandleDeletionAtPlace(currentGridPos);
+        return;
+    }
+
+    if (mode == ROAD_UPDATE) {
+        trafficManager->SpawnVehicleAtCoord(currentGridPos);
         return;
     }
 

@@ -90,6 +90,10 @@ void InputHandler::HandleRoadPlacement() {
         uiManager->ModeSelect(UIManager::ROAD_DELETE);
     }
 
+    if (IsKeyPressed(KEY_J)) {
+        uiManager->ModeSelect(UIManager::ROAD_UPDATE);
+    }
+
     if (IsKeyPressed(KEY_ENTER)) {
         uiManager->ModeSelect(UIManager::IDLE);
     }

@@ -13,8 +13,14 @@ class World;
 class DirtRoad;
 class DirtIntersection;
 
+enum class NodeType {
+    NODE,
+    SPAWNER_NODE,
+    MIDDLE_NODE,
+};
+
 class TrafficNode : IDebuggable {
-    private: 
+    protected: 
         Vector3 worldPosition;     // 3D position in world space
         Vector3 chunkInfo;
         std::vector<TrafficNode*> connections;  // Adjacent nodes
@@ -23,9 +29,16 @@ class TrafficNode : IDebuggable {
         Material* roadMaterial;
         Mesh intMesh;       
         bool meshGenerated = false; 
+
+        NodeType type;
+
+
+        bool canUTurn = false;
     
     public: 
-        TrafficNode(Vector3 position) : worldPosition(position) {};
+        TrafficNode(Vector3 position) : worldPosition(position) {
+            type = NodeType::NODE;
+        };
         
         void SetChunkInfo(Vector3 chunk);
         Vector3 GetChunkInfo() const { return chunkInfo; };
@@ -33,6 +46,7 @@ class TrafficNode : IDebuggable {
 
         void SetNeighbourNode(TrafficNode* node);
         void RemoveNeighbourNode(TrafficNode* node);
+        const std::vector<TrafficNode*>& ShowNeighbours() const {return connections;};
         // std::vector<Vector3> GetChunksCrossedBySegment(Vector3 a, Vector3 b);
 
         void Render() const;
@@ -40,9 +54,19 @@ class TrafficNode : IDebuggable {
         void RenderDebug() const override;
         void SetDebugVisible(bool visible) override;
         bool IsDebugVisible() const override;
+
+        NodeType GetType() {return type;}
+        void ChangeType(NodeType newType) {
+            type = newType;
+        }
+
         ~TrafficNode();
 
         friend class TrafficNetwork;
+};
+
+class SpawnerNode : TrafficNode {
+
 };
 
 class RoadSegment {
@@ -74,7 +98,7 @@ class TrafficNetwork {
     public: 
         TrafficNetwork(World* wrld); 
         TrafficNode* GetNearestNode(Vector3 position);
-        std::vector<TrafficNode*> FindPath(TrafficNode* start, TrafficNode* end);
+        std::vector<TrafficNode*>& FindPath(TrafficNode* start, TrafficNode* end);
         TrafficNode* CreateNode(Vector3 position);
         void DeleteNode(TrafficNode* node);
         void DebugNodesIterator(Camera3D* camera);

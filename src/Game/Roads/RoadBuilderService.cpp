@@ -48,7 +48,7 @@ void RoadBuilderService::BuildRoad(Vector3 startPos, Vector3 endPos) {
         // TraceLog(LOG_DEBUG, "Iteration %i", i);
         currentPos = {
             startPos.x + dx * t,
-            startPos.y + dy * t,  // Keep Y constant
+            startPos.y + dy * t,  
             startPos.z + dz * t
         };
 
@@ -62,7 +62,7 @@ void RoadBuilderService::BuildRoad(Vector3 startPos, Vector3 endPos) {
         if (i % nodeSpacing == 0 && !world->FindNearestNode(currentPos) && (numSteps - i) > 3) {
             // TraceLog(LOG_DEBUG, "Started building process");
             TrafficNode* node = networkManager->CreateNode(currentPos);
-            if (lastNode && node != lastNode) {
+            if (lastNode && node != lastNode) {                
                 networkManager->AddRoad(lastNode, node);
             }
             lastNode = node;

@@ -26,8 +26,6 @@ void TrafficNode::RenderDebug() const {
 
     DrawCube(worldPosition, size.x, size.y, size.z, color);
     DrawCubeWires(worldPosition, size.x, size.y, size.z, WHITE);
-    // DrawCylinder(worldPosition, 8.0f, 8.0f, 0.8f, 30, RED);
-
 }
 
 void TrafficNode::SetDebugVisible(bool visible) {
@@ -98,6 +96,7 @@ TrafficNode* TrafficNetwork::CreateNode(Vector3 position) {
     newnode->GenerateMesh();
     return regNode;
 }
+
 
 void TrafficNetwork::DeleteNode(TrafficNode* node) {
     if (!node) return;

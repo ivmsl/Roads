@@ -17,11 +17,12 @@ void GameLoop::Initialize(int screenW, int screenH) {
     grid = new GridRenderer();
     grid->Initialize();
 
+    trafficManager = new TrafficManager(worldHandler);
 
     trafficNetwork = new TrafficNetwork(worldHandler);
     roadBuilder = new RoadBuilderService(worldHandler, trafficNetwork);
 
-    uiManager = new UIManager(roadBuilder, gameStageHandler);
+    uiManager = new UIManager(roadBuilder, gameStageHandler, trafficManager);
 
     input = new InputHandler();
     input->Initialize(camera, grid, uiManager, worldHandler);
@@ -91,6 +92,8 @@ void GameLoop::RenderDebugInfo() {
     Camera3D cam = camera->GetCamera();
     trafficNetwork->DebugNodesIterator(&cam);
 
+    trafficManager->RenderVehicle();
+
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT)) {
         Ray ray = GetScreenToWorldRay(GetMousePosition(), cam);
         float t = -ray.position.y / ray.direction.y;
@@ -139,11 +142,13 @@ void GameLoop::Run() {
 
 void GameLoop::Update() {
     input->ProcessInput();
+    trafficManager->UpdateVehicles();
 }
 
 void GameLoop::Cleanup() {
     gameStageHandler->ChangeStage(GameStage::GAME_CLEANUP);
     CloseWindow(); 
+    delete trafficManager;
     delete trafficNetwork;
     delete roadBuilder;
     delete uiManager;

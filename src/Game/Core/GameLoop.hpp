@@ -5,6 +5,7 @@
 #include "Game/Rendering/CameraController.hpp"
 #include "Game/Rendering/GridRender.hpp"
 #include "Game/Roads/RoadBuilderService.hpp"
+#include "Game/Traffic/TrafficManager.hpp"
 #include "Game/UI/UIManager.hpp"
 #include "InputHandler.hpp"
 #include "Game/World/World.hpp"
@@ -25,6 +26,7 @@ class GameLoop {
         UIManager* uiManager;
         World* worldHandler;
         RoadBuilderService* roadBuilder;
+        TrafficManager* trafficManager;
         bool isRunning;
         
 
